@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Buku Tamu — Pelayanan Statistik Terpadu BPS Kab. Buton Utara</title>
-    <meta name="description" content="Buku tamu digital Pelayanan Statistik Terpadu BPS Kabupaten Buton Utara. Isi data diri dan keperluan kunjungan Anda." />
+    <meta
+      name="description"
+      content="Buku tamu digital Pelayanan Statistik Terpadu BPS Kabupaten Buton Utara. Isi data diri dan keperluan kunjungan Anda."
+    />
     <link rel="stylesheet" href="css/style_tamu.css" />
   </head>
   <body>
@@ -16,13 +19,17 @@
 
     <div class="page">
       <div class="hero">
-        <div class="hero-emblem">📋</div>
-        <h1>Selamat Datang,<br /><em>Tamu Kami</em></h1>
+        <div class="hero-emblem">
+          <img src="img/log-bps.png" alt="" />
+          <img src="img/logo-pst.png" alt="" />
+        </div>
+        <h1>
+          Selamat Datang<br />
+          di <em>BPS Kabupaten Buton Utara</em>
+        </h1>
         <div class="hero-line"></div>
-        <p class="hero-org">Pelayanan Statistik Terpadu<br /><strong>BPS Kabupaten Buton Utara</strong></p>
         <p>
-          Mohon isi buku tamu terlebih dahulu sebelum melanjutkan kunjungan.<br />
-          Terima kasih atas kehadiran Anda.
+          Mohon isi buku tamu terlebih dahulu sebelum melanjutkan kunjungan.
         </p>
       </div>
 
@@ -44,7 +51,9 @@
           <div class="sec">Data Diri</div>
           <div class="fields">
             <div class="field">
-              <div class="lbl">Nama Lengkap <span class="req">wajib</span></div>
+              <div class="lbl">
+                Nama Lengkap (Tanpa Gelar)<span class="req">wajib</span>
+              </div>
               <div class="ac">
                 <input
                   type="text"
@@ -60,7 +69,9 @@
             </div>
             <div class="row2">
               <div class="field">
-                <div class="lbl">Instansi / Asal <span class="req">wajib</span></div>
+                <div class="lbl">
+                  Instansi / Asal <span class="req">wajib</span>
+                </div>
                 <input type="text" id="fInst" placeholder="Nama instansi…" />
               </div>
               <div class="field">
@@ -70,17 +81,33 @@
             </div>
             <div class="row2">
               <div class="field">
-                <div class="lbl">No. WhatsApp <span class="req">wajib</span></div>
-                <input type="tel" id="fWa" placeholder="08xxxxxxxxxx" />
+                <div class="lbl">
+                  No. WhatsApp <span class="req">wajib</span>
+                </div>
+                <input type="tel" id="fWa" placeholder="08xxxxxxxx" />
               </div>
               <div class="field">
-                <div class="lbl">Email <span style="font-size:9px;color:var(--g400);font-weight:700;text-transform:uppercase;letter-spacing:0.5px">opsional</span></div>
+                <div class="lbl">
+                  Email
+                  <!-- <span
+                    style="
+                      font-size: 9px;
+                      color: var(--g400);
+                      font-weight: 700;
+                      text-transform: uppercase;
+                      letter-spacing: 0.5px;
+                    "
+                    >opsional</span
+                  > -->
+                </div>
                 <input type="email" id="fEmail" placeholder="nama@email.com" />
               </div>
             </div>
           </div>
 
-          <div class="sec">Keperluan Kunjungan <span class="req">wajib</span></div>
+          <div class="sec">
+            Keperluan Kunjungan <span class="req">wajib</span>
+          </div>
           <div class="kep-list">
             <label class="kep" onclick="toggleKep(this)"
               ><input type="checkbox" name="kep" value="Perpustakaan" /><span
@@ -115,7 +142,24 @@
               /><span class="kep-ico">🏅</span>
               <div class="kep-info">
                 <div class="kep-name">Rekomendasi Statistik</div>
-                <div class="kep-desc">Pengajuan rekomendasi statistik</div>
+                <div class="kep-desc">
+                  Pengajuan rekomendasi kegiatan statistik
+                </div>
+              </div></label
+            >
+            <label class="kep" onclick="toggleKep(this)"
+              ><input
+                type="checkbox"
+                name="kep"
+                value="Pemutakhiran DTSEN"
+              /><span class="kep-ico"
+                ><img src="img/logo-dtsen.png" alt=""
+              /></span>
+              <div class="kep-info">
+                <div class="kep-name">Pemutakhiran DTSEN</div>
+                <div class="kep-desc">
+                  Cek desil dan pemutakhiran data DTSEN
+                </div>
               </div></label
             >
             <label class="kep" onclick="toggleKep(this)"
@@ -132,9 +176,19 @@
               </div></label
             >
           </div>
-          <div class="field field-lainnya" id="fieldLainnya" style="display:none;margin-top:12px">
-            <div class="lbl">Keperluan Lainnya <span class="req">wajib</span></div>
-            <input type="text" id="fLainnya" placeholder="Tuliskan keperluan Anda…" />
+          <div
+            class="field field-lainnya"
+            id="fieldLainnya"
+            style="display: none; margin-top: 12px"
+          >
+            <div class="lbl">
+              Keperluan Lainnya <span class="req">wajib</span>
+            </div>
+            <input
+              type="text"
+              id="fLainnya"
+              placeholder="Tuliskan keperluan Anda…"
+            />
           </div>
 
           <button class="btn-submit" id="btnDaftar" onclick="submitForm()">
@@ -145,21 +199,25 @@
         <div class="suc" id="suc">
           <div class="suc-ring">✓</div>
           <h2>Terima Kasih!</h2>
-          <p>
-            Kunjungan <b id="sucName"></b> telah berhasil dicatat.
-          </p>
+          <p>Kunjungan <b id="sucName"></b> telah berhasil dicatat.</p>
           <div class="queue-ticket" id="queueTicket">
             <div class="qt-label">Nomor Antrian Anda</div>
             <div class="qt-number" id="qtNumber">—</div>
-            <div class="qt-hint">Silakan menunggu nomor antrian Anda dipanggil</div>
+            <div class="qt-hint">
+              Silakan menunggu nomor antrian Anda dipanggil
+            </div>
           </div>
-          <div class="qt-countdown" id="qtCountdown">Kembali otomatis dalam <b id="qtSec">10</b> detik</div>
+          <div class="qt-countdown" id="qtCountdown">
+            Kembali otomatis dalam <b id="qtSec">10</b> detik
+          </div>
           <button class="btn-lagi" onclick="resetForm()">
             Tamu Berikutnya →
           </button>
         </div>
       </div>
-      <div class="footer">Pelayanan Statistik Terpadu · BPS Kab. Buton Utara · Buku Tamu Digital</div>
+      <div class="footer">
+        Pelayanan Statistik Terpadu · BPS Kab. Buton Utara · Buku Tamu Digital
+      </div>
     </div>
 
     <script src="libs/sql-wasm.js"></script>
