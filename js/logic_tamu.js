@@ -12,6 +12,7 @@ let _p = 0,
   }, 180);
 
 async function initDB() {
+  await loadInstansiList();
   sub.textContent = "Memuat sql-wasm.wasm…";
   SQL = await initSqlJs({ locateFile: () => "libs/sql-wasm.wasm" });
   sub.textContent = "Membuka database…";
@@ -44,9 +45,15 @@ async function initDB() {
     CREATE INDEX IF NOT EXISTS idx_nama ON tamu(nama COLLATE NOCASE);
   `);
   // Migration: add no_antrian, selesai, and email columns if they don't exist
-  try { db.run("ALTER TABLE tamu ADD COLUMN no_antrian INTEGER DEFAULT 0"); } catch(e) {}
-  try { db.run("ALTER TABLE tamu ADD COLUMN selesai INTEGER DEFAULT 0"); } catch(e) {}
-  try { db.run("ALTER TABLE tamu ADD COLUMN email TEXT DEFAULT ''"); } catch(e) {}
+  try {
+    db.run("ALTER TABLE tamu ADD COLUMN no_antrian INTEGER DEFAULT 0");
+  } catch (e) {}
+  try {
+    db.run("ALTER TABLE tamu ADD COLUMN selesai INTEGER DEFAULT 0");
+  } catch (e) {}
+  try {
+    db.run("ALTER TABLE tamu ADD COLUMN email TEXT DEFAULT ''");
+  } catch (e) {}
 
   clearInterval(_pt);
   fill.style.width = "100%";
@@ -87,6 +94,7 @@ function dbRun(sql, p = []) {
   db.run(sql, p);
   persist();
 }
+
 function dbAll(sql, p = []) {
   const r = db.exec(sql, p);
   if (!r.length) return [];
@@ -95,9 +103,22 @@ function dbAll(sql, p = []) {
     Object.fromEntries(columns.map((c, i) => [c, row[i]])),
   );
 }
+
 function dbS(sql, p = []) {
   const r = db.exec(sql, p);
   return r.length && r[0].values.length ? r[0].values[0][0] : 0;
+}
+
+let INSTANSI_LIST = [];
+
+async function loadInstansiList() {
+  try {
+    const res = await fetch("data/instansi.json");
+    INSTANSI_LIST = await res.json();
+  } catch (e) {
+    console.warn("Gagal memuat daftar instansi:", e);
+    INSTANSI_LIST = [];
+  }
 }
 
 // Autocomplete
@@ -105,6 +126,7 @@ let _items = [],
   _idx = -1,
   _sugg = null,
   _timer;
+
 function onNama(v) {
   dismissSugg();
   clearTimeout(_timer);
@@ -136,6 +158,7 @@ function onNama(v) {
     dd.classList.add("open");
   }, 140);
 }
+
 function pick(i) {
   const m = _items[i];
   if (!m) return;
@@ -148,12 +171,15 @@ function pick(i) {
     `${m.instansi || "—"} · ${m.jabatan || "—"} · Data lama ditemukan. Gunakan?`;
   document.getElementById("suggBanner").classList.add("show");
 }
+
 function schedHide() {
   setTimeout(closeDD, 180);
 }
+
 function closeDD() {
   document.getElementById("dd").classList.remove("open");
 }
+
 function onKey(e) {
   const dd = document.getElementById("dd");
   if (!dd.classList.contains("open")) return;
@@ -171,8 +197,80 @@ function onKey(e) {
     pick(_idx);
   } else if (e.key === "Escape") closeDD();
 }
+
 function hiDD(its) {
   its.forEach((el, i) => el.classList.toggle("hi", i === _idx));
+}
+
+let _instItems = [],
+  _instIdx = -1;
+
+function onInst(v) {
+  const q = v.trim().toLowerCase();
+  if (!q) {
+    closeDDInst();
+    return;
+  }
+  // Rank starts-with matches above contains-matches, then take top 3
+  const matches = INSTANSI_LIST.filter((item) => item.toLowerCase().includes(q))
+    .sort((a, b) => {
+      const aStarts = a.toLowerCase().startsWith(q) ? 0 : 1;
+      const bStarts = b.toLowerCase().startsWith(q) ? 0 : 1;
+      return aStarts - bStarts;
+    })
+    .slice(0, 3);
+
+  _instItems = matches;
+  _instIdx = -1;
+  const dd = document.getElementById("ddInst");
+  if (!matches.length) {
+    closeDDInst();
+    return;
+  }
+  dd.innerHTML = matches
+    .map(
+      (m, i) =>
+        `<div class="ddi" onmousedown="pickInst(${i})"><div class="dn">${esc(m)}</div></div>`,
+    )
+    .join("");
+  dd.classList.add("open");
+}
+
+function pickInst(i) {
+  const m = _instItems[i];
+  if (!m) return;
+  document.getElementById("fInst").value = m;
+  closeDDInst();
+}
+
+function schedHideInst() {
+  setTimeout(closeDDInst, 180);
+}
+
+function closeDDInst() {
+  document.getElementById("ddInst").classList.remove("open");
+}
+
+function onKeyInst(e) {
+  const dd = document.getElementById("ddInst");
+  if (!dd.classList.contains("open")) return;
+  const its = dd.querySelectorAll(".ddi");
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    _instIdx = Math.min(_instIdx + 1, its.length - 1);
+    hiDDInst(its);
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    _instIdx = Math.max(_instIdx - 1, -1);
+    hiDDInst(its);
+  } else if (e.key === "Enter" && _instIdx >= 0) {
+    e.preventDefault();
+    pickInst(_instIdx);
+  } else if (e.key === "Escape") closeDDInst();
+}
+
+function hiDDInst(its) {
+  its.forEach((el, i) => el.classList.toggle("hi", i === _instIdx));
 }
 
 // Suggestion
@@ -188,10 +286,12 @@ function applySugg() {
   });
   dismissSugg();
 }
+
 function dismissSugg() {
   document.getElementById("suggBanner").classList.remove("show");
   _sugg = null;
 }
+
 function sf(id, v, mark) {
   const el = document.getElementById(id);
   el.value = v || "";
@@ -205,16 +305,18 @@ function toggleKep(lbl) {
     0,
   );
 }
+
 function toggleLainnya() {
   const checked = document.getElementById("kepLainnya").checked;
   const field = document.getElementById("fieldLainnya");
-  field.style.display = checked ? "flex" : "none";
+  field.classList.toggle("show", checked);
   if (checked) {
     document.getElementById("fLainnya").focus();
   } else {
     document.getElementById("fLainnya").value = "";
   }
 }
+
 function getKep() {
   const checked = [...document.querySelectorAll("input[name=kep]:checked")].map(
     (c) => c.value,
@@ -234,7 +336,9 @@ function getKep() {
 
 // Get next queue number for today
 function getNextQueueNumber() {
-  const todayNum = dbS("SELECT MAX(no_antrian) FROM tamu WHERE date(timestamp)=date('now','localtime')");
+  const todayNum = dbS(
+    "SELECT MAX(no_antrian) FROM tamu WHERE date(timestamp)=date('now','localtime')",
+  );
   return (todayNum || 0) + 1;
 }
 
@@ -248,30 +352,63 @@ function submitForm() {
   const jab = document.getElementById("fJab").value.trim();
   const noWa = document.getElementById("fWa").value.trim();
   const email = document.getElementById("fEmail").value.trim();
+  const anyKepChecked =
+    document.querySelectorAll("input[name=kep]:checked").length > 0;
   const kep = getKep();
 
   let valid = true;
-  if (!nama) { shake("fNama"); valid = false; }
-  if (!inst) { shake("fInst"); valid = false; }
-  if (!jab) { shake("fJab"); valid = false; }
-  
+  if (!nama) {
+    shake("fNama");
+    valid = false;
+  }
+  if (!inst) {
+    shake("fInst");
+    valid = false;
+  }
+  if (!jab) {
+    shake("fJab");
+    valid = false;
+  }
+
   // Validasi No HP (angka, spasi, +, -, minimal 9 digit)
   const waRegex = /^[0-9+\-\s]{9,18}$/;
-  if (!noWa || !waRegex.test(noWa)) { shake("fWa"); valid = false; }
-  
+  if (!noWa || !waRegex.test(noWa)) {
+    shake("fWa");
+    valid = false;
+  }
+
   // Validasi Email (opsional, tapi jika diisi harus valid)
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (email && !emailRegex.test(email)) { shake("fEmail"); valid = false; }
+  if (email && !emailRegex.test(email)) {
+    shake("fEmail");
+    valid = false;
+  }
 
-  if (!kep.length) { shakeEl(document.querySelector(".kep-list")); valid = false; }
-  
-  if (!valid) return;
+  if (!anyKepChecked) {
+    document.querySelectorAll(".kep").forEach((el) => {
+      el.classList.add("err");
+    });
+    shakeEl(document.querySelector(".kep-list"));
+    valid = false;
+  }
+
+  // if (!kep.length) {
+  //   shakeEl(document.querySelector(".kep-list"));
+  //   document.querySelector(".kep-list").classList.add("err");
+  //   valid = false;
+  // }
 
   // Validate "Lainnya" textfield
-  if (document.getElementById("kepLainnya").checked && !document.getElementById("fLainnya").value.trim()) {
+  if (
+    document.getElementById("kepLainnya").checked &&
+    !document.getElementById("fLainnya").value.trim()
+  ) {
     shake("fLainnya");
     return;
   }
+
+  if (!valid) return;
+
   const btn = document.getElementById("btnDaftar");
   btn.disabled = true;
   document.getElementById("btnLabel").textContent = "Menyimpan…";
@@ -281,15 +418,7 @@ function submitForm() {
       const queueNum = getNextQueueNumber();
       dbRun(
         `INSERT INTO tamu(nama,instansi,jabatan,no_wa,email,keperluan,no_antrian) VALUES(?,?,?,?,?,?,?)`,
-        [
-          nama,
-          inst,
-          jab,
-          noWa,
-          email,
-          kep.join("|"),
-          queueNum,
-        ],
+        [nama, inst, jab, noWa, email, kep.join("|"), queueNum],
       );
       document.getElementById("sucName").textContent = nama;
       document.getElementById("qtNumber").textContent = queueNum;
@@ -329,18 +458,21 @@ function resetForm() {
     el.classList.remove("filled", "err");
   });
   document.querySelectorAll(".kep").forEach((el) => {
-    el.classList.remove("on");
+    el.classList.remove("on", "err"); // add "err" here
     el.querySelector("input").checked = false;
   });
-  document.getElementById("fieldLainnya").style.display = "none";
+  document.querySelector(".kep-list").classList.remove("err");
+  document.getElementById("fieldLainnya").classList.remove("show");
   dismissSugg();
   closeDD();
   document.getElementById("fNama").focus();
 }
+
 function shake(id) {
   shakeEl(document.getElementById(id));
   document.getElementById(id).classList.add("err");
 }
+
 function shakeEl(el) {
   el.style.animation = "none";
   void el.offsetWidth;
@@ -349,12 +481,29 @@ function shakeEl(el) {
     once: true,
   });
 }
+
 function esc(s) {
   return String(s || "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 }
+
+["fNama", "fInst", "fJab", "fWa", "fEmail", "fLainnya"].forEach((id) => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener("focus", () => el.classList.remove("err"));
+    el.addEventListener("input", () => el.classList.remove("err"));
+  }
+});
+
+document.querySelectorAll("input[name=kep]").forEach((cb) => {
+  cb.addEventListener("change", () => {
+    document
+      .querySelectorAll(".kep")
+      .forEach((el) => el.classList.remove("err"));
+  });
+});
 
 initDB().catch((e) => {
   clearInterval(_pt);

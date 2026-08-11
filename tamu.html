@@ -23,10 +23,7 @@
           <img src="img/log-bps.png" alt="" />
           <img src="img/logo-pst.png" alt="" />
         </div>
-        <h1>
-          Selamat Datang<br />
-          di <em>BPS Kabupaten Buton Utara</em>
-        </h1>
+        <h1>Selamat datang di <em>BPS Kabupaten Buton Utara</em></h1>
         <div class="hero-line"></div>
         <p>
           Mohon isi buku tamu terlebih dahulu sebelum melanjutkan kunjungan.
@@ -72,7 +69,19 @@
                 <div class="lbl">
                   Instansi / Asal <span class="req">wajib</span>
                 </div>
-                <input type="text" id="fInst" placeholder="Nama instansi…" />
+                <div class="ac">
+                  <input
+                    type="text"
+                    id="fInst"
+                    placeholder="Nama instansi…"
+                    autocomplete="off"
+                    oninput="onInst(this.value)"
+                    onblur="schedHideInst()"
+                    onkeydown="onKeyInst(event)"
+                  />
+                  <div class="dd" id="ddInst"></div>
+                </div>
+                <!-- <input type="text" id="fInst" placeholder="Nama instansi…" /> -->
               </div>
               <div class="field">
                 <div class="lbl">Jabatan <span class="req">wajib</span></div>
@@ -87,19 +96,7 @@
                 <input type="tel" id="fWa" placeholder="08xxxxxxxx" />
               </div>
               <div class="field">
-                <div class="lbl">
-                  Email
-                  <!-- <span
-                    style="
-                      font-size: 9px;
-                      color: var(--g400);
-                      font-weight: 700;
-                      text-transform: uppercase;
-                      letter-spacing: 0.5px;
-                    "
-                    >opsional</span
-                  > -->
-                </div>
+                <div class="lbl">Email</div>
                 <input type="email" id="fEmail" placeholder="nama@email.com" />
               </div>
             </div>
@@ -112,8 +109,8 @@
             <label class="kep" onclick="toggleKep(this)"
               ><input type="checkbox" name="kep" value="Perpustakaan" /><span
                 class="kep-ico"
-                >📚</span
-              >
+                ><img src="img/book-open.svg" alt=""
+              /></span>
               <div class="kep-info">
                 <div class="kep-name">Perpustakaan</div>
                 <div class="kep-desc">
@@ -126,7 +123,9 @@
                 type="checkbox"
                 name="kep"
                 value="Konsultasi Statistik"
-              /><span class="kep-ico">📈</span>
+              /><span class="kep-ico"
+                ><img src="img/message-square.svg" alt=""
+              /></span>
               <div class="kep-info">
                 <div class="kep-name">Konsultasi Statistik</div>
                 <div class="kep-desc">
@@ -139,7 +138,9 @@
                 type="checkbox"
                 name="kep"
                 value="Rekomendasi Statistik"
-              /><span class="kep-ico">🏅</span>
+              /><span class="kep-ico"
+                ><img src="img/file-text.svg" alt=""
+              /></span>
               <div class="kep-info">
                 <div class="kep-name">Rekomendasi Statistik</div>
                 <div class="kep-desc">
@@ -157,9 +158,7 @@
               /></span>
               <div class="kep-info">
                 <div class="kep-name">Pemutakhiran DTSEN</div>
-                <div class="kep-desc">
-                  Cek desil dan pemutakhiran data DTSEN
-                </div>
+                <div class="kep-desc">Cek desil dan pemutakhiran data</div>
               </div></label
             >
             <label class="kep" onclick="toggleKep(this)"
@@ -169,18 +168,14 @@
                 value="Lainnya"
                 id="kepLainnya"
                 onchange="toggleLainnya()"
-              /><span class="kep-ico">✏️</span>
+              /><span class="kep-ico"><img src="img/edit.svg" alt="" /></span>
               <div class="kep-info">
                 <div class="kep-name">Lainnya</div>
                 <div class="kep-desc">Keperluan lain yang tidak tercantum</div>
               </div></label
             >
           </div>
-          <div
-            class="field field-lainnya"
-            id="fieldLainnya"
-            style="display: none; margin-top: 12px"
-          >
+          <div class="field field-lainnya" id="fieldLainnya">
             <div class="lbl">
               Keperluan Lainnya <span class="req">wajib</span>
             </div>
@@ -193,7 +188,9 @@
 
           <button class="btn-submit" id="btnDaftar" onclick="submitForm()">
             <span id="btnLabel">Daftar Kunjungan</span>
-            <span class="arr" id="btnArr">→</span>
+            <span class="arr" id="btnArr"
+              ><img src="img/log-in.svg" alt=""
+            /></span>
           </button>
         </div>
         <div class="suc" id="suc">
