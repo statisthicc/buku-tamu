@@ -46,7 +46,7 @@
           </div>
 
           <div class="sec">Data Diri</div>
-          <div class="fields">
+          <!-- <div class="fields">
             <div class="field">
               <div class="lbl">
                 Nama Lengkap (Tanpa Gelar)<span class="req">wajib</span>
@@ -73,7 +73,7 @@
                   <input
                     type="text"
                     id="fInst"
-                    placeholder="Nama instansi…"
+                    placeholder="Nama instansi/Domisili…"
                     autocomplete="off"
                     oninput="onInst(this.value)"
                     onblur="schedHideInst()"
@@ -81,13 +81,89 @@
                   />
                   <div class="dd" id="ddInst"></div>
                 </div>
-                <!-- <input type="text" id="fInst" placeholder="Nama instansi…" /> -->
               </div>
               <div class="field">
                 <div class="lbl">Jabatan <span class="req">wajib</span></div>
                 <input type="text" id="fJab" placeholder="Jabatan Anda…" />
               </div>
             </div>
+            <div class="row2">
+              <div class="field">
+                <div class="lbl">
+                  No. WhatsApp <span class="req">wajib</span>
+                </div>
+                <input type="tel" id="fWa" placeholder="08xxxxxxxx" />
+              </div>
+              <div class="field">
+                <div class="lbl">Email</div>
+                <input type="email" id="fEmail" placeholder="nama@email.com" />
+              </div>
+            </div>
+          </div> -->
+          <div class="fields">
+            <div class="row2">
+              <div class="field">
+                <div class="lbl">
+                  Nama Lengkap (Tanpa Gelar)<span class="req">wajib</span>
+                </div>
+                <div class="ac">
+                  <input
+                    type="text"
+                    id="fNama"
+                    placeholder="Masukkan nama lengkap Anda…"
+                    autocomplete="off"
+                    oninput="onNama(this.value)"
+                    onblur="schedHide()"
+                    onkeydown="onKey(event)"
+                  />
+                  <div class="dd" id="dd"></div>
+                </div>
+              </div>
+              <div class="field">
+                <div class="lbl">
+                  Pekerjaan Utama <span class="req">wajib</span>
+                </div>
+                <div class="cs" id="csPekerjaan">
+                  <div
+                    class="cs-trigger"
+                    id="csTrigger"
+                    onclick="togglePekerjaanDD()"
+                  >
+                    <span id="csLabel">Pilih pekerjaan…</span>
+                    <span class="cs-arrow"
+                      ><img src="img/triangle down.svg" alt=""
+                    /></span>
+                  </div>
+                  <div class="cs-dd" id="csDD"></div>
+                  <input type="hidden" id="fPekerjaan" />
+                </div>
+              </div>
+            </div>
+
+            <div class="row2">
+              <div class="field">
+                <div class="lbl">
+                  Instansi / Asal <span class="req">wajib</span>
+                </div>
+                <div class="ac">
+                  <input
+                    type="text"
+                    id="fInst"
+                    placeholder="Nama instansi/Asal…"
+                    autocomplete="off"
+                    oninput="onInst(this.value)"
+                    onblur="schedHideInst()"
+                    onkeydown="onKeyInst(event)"
+                  />
+                  <div class="dd" id="ddInst"></div>
+                </div>
+              </div>
+              <div class="field">
+                <div class="lbl">Jabatan <span class="req">wajib</span></div>
+                <input type="text" id="fJab" placeholder="Jabatan Anda…" />
+              </div>
+            </div>
+
             <div class="row2">
               <div class="field">
                 <div class="lbl">

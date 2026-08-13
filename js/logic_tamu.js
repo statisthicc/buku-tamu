@@ -12,7 +12,8 @@ let _p = 0,
   }, 180);
 
 async function initDB() {
-  await loadInstansiList();
+  const instansiPromise = loadInstansiList();
+  const pekerjaanPromise = loadPekerjaanList();
   sub.textContent = "Memuat sql-wasm.wasm…";
   SQL = await initSqlJs({ locateFile: () => "libs/sql-wasm.wasm" });
   sub.textContent = "Membuka database…";
@@ -54,6 +55,11 @@ async function initDB() {
   try {
     db.run("ALTER TABLE tamu ADD COLUMN email TEXT DEFAULT ''");
   } catch (e) {}
+  try {
+    db.run("ALTER TABLE tamu ADD COLUMN pekerjaan TEXT DEFAULT ''");
+  } catch (e) {}
+
+  await Promise.all([instansiPromise, pekerjaanPromise]);
 
   clearInterval(_pt);
   fill.style.width = "100%";
@@ -93,6 +99,7 @@ function persist() {
 function dbRun(sql, p = []) {
   db.run(sql, p);
   persist();
+  _nameCache = null; // invalidate cache so next search rebuilds it with fresh data
 }
 
 function dbAll(sql, p = []) {
@@ -125,27 +132,75 @@ async function loadInstansiList() {
 let _items = [],
   _idx = -1,
   _sugg = null,
-  _timer;
+  _timer,
+  _nameCache = null;
+
+// function onNama(v) {
+//   dismissSugg();
+//   clearTimeout(_timer);
+//   if (!v.trim()) {
+//     closeDD();
+//     return;
+//   }
+//   _timer = setTimeout(() => {
+//     const rows = dbAll(
+//       `SELECT t.* FROM tamu t INNER JOIN (SELECT nama,MAX(id) mid FROM tamu WHERE nama LIKE ? COLLATE NOCASE GROUP BY LOWER(nama)) l ON t.id=l.mid ORDER BY t.timestamp DESC LIMIT 6`,
+//       [v.trim() + "%"],
+//     );
+//     _items = rows.map((r) => ({
+//       ...r,
+//       keperluan: r.keperluan ? r.keperluan.split("|") : [],
+//     }));
+//     _idx = -1;
+//     const dd = document.getElementById("dd");
+//     if (!rows.length) {
+//       closeDD();
+//       return;
+//     }
+//     dd.innerHTML = _items
+//       .map(
+//         (m, i) =>
+//           `<div class="ddi" onmousedown="pick(${i})"><div class="dn">${esc(m.nama)}</div><div class="ds">${[m.instansi, m.jabatan].filter(Boolean).join(" · ") || "&nbsp;"}</div></div>`,
+//       )
+//       .join("");
+//     dd.classList.add("open");
+//   }, 140);
+// }
+
+function refreshNameCache() {
+  _nameCache = dbAll(
+    `SELECT t.* FROM tamu t INNER JOIN (
+       SELECT nama, MAX(id) mid FROM tamu GROUP BY LOWER(nama)
+     ) l ON t.id = l.mid`,
+  );
+}
 
 function onNama(v) {
   dismissSugg();
   clearTimeout(_timer);
-  if (!v.trim()) {
+  const q = v.trim();
+
+  if (q.length < 4) {
     closeDD();
     return;
   }
+
   _timer = setTimeout(() => {
-    const rows = dbAll(
-      `SELECT t.* FROM tamu t INNER JOIN (SELECT nama,MAX(id) mid FROM tamu WHERE nama LIKE ? COLLATE NOCASE GROUP BY LOWER(nama)) l ON t.id=l.mid ORDER BY t.timestamp DESC LIMIT 6`,
-      [v.trim() + "%"],
-    );
-    _items = rows.map((r) => ({
+    if (!_nameCache) refreshNameCache(); // build cache only if missing
+
+    const scored = _nameCache
+      .map((r) => ({ ...r, _score: nameSimilarity(q, r.nama) }))
+      .filter((r) => r._score > 0) // nameSimilarity already returns 0 for rejected matches
+      .sort((a, b) => b._score - a._score)
+      .slice(0, 3);
+
+    _items = scored.map((r) => ({
       ...r,
       keperluan: r.keperluan ? r.keperluan.split("|") : [],
     }));
     _idx = -1;
     const dd = document.getElementById("dd");
-    if (!rows.length) {
+    if (!_items.length) {
       closeDD();
       return;
     }
@@ -168,7 +223,7 @@ function pick(i) {
   document.getElementById("suggName").textContent =
     `Selamat datang kembali, ${m.nama}!`;
   document.getElementById("suggDetail").textContent =
-    `${m.instansi || "—"} · ${m.jabatan || "—"} · Data lama ditemukan. Gunakan?`;
+    `${m.instansi || "—"} · ${m.jabatan || "—"} — Data pengguna ditemukan. Gunakan?`;
   document.getElementById("suggBanner").classList.add("show");
 }
 
@@ -202,6 +257,74 @@ function hiDD(its) {
   its.forEach((el, i) => el.classList.toggle("hi", i === _idx));
 }
 
+// Suggestion
+function applySugg() {
+  if (!_sugg) return;
+  sf("fInst", _sugg.instansi, 1);
+  sf("fJab", _sugg.jabatan, 1);
+  sf("fWa", _sugg.no_wa, 1);
+  sf("fEmail", _sugg.email, 1);
+  document.querySelectorAll(".kep").forEach((el) => {
+    el.classList.remove("on");
+    el.querySelector("input").checked = false;
+  });
+  dismissSugg();
+}
+
+function dismissSugg() {
+  document.getElementById("suggBanner").classList.remove("show");
+  _sugg = null;
+}
+
+function sf(id, v, mark) {
+  const el = document.getElementById(id);
+  el.value = v || "";
+  el.classList.toggle("filled", !!mark && !!v);
+}
+
+//Pekerjaan Utama
+let PEKERJAAN_LIST = [];
+
+async function loadPekerjaanList() {
+  try {
+    const res = await fetch("data/pekerjaan.json");
+    PEKERJAAN_LIST = await res.json();
+  } catch (e) {
+    console.warn("Gagal memuat daftar pekerjaan:", e);
+    PEKERJAAN_LIST = [];
+  }
+  renderPekerjaanDD(); // add this line — builds the dropdown items once loaded
+}
+
+function renderPekerjaanDD() {
+  const dd = document.getElementById("csDD");
+  dd.innerHTML = PEKERJAAN_LIST.map(
+    (p) =>
+      `<div class="cs-item" onclick="pickPekerjaan('${esc(p).replace(/'/g, "\\'")}')">${esc(p)}</div>`,
+  ).join("");
+}
+
+function togglePekerjaanDD() {
+  document.getElementById("csPekerjaan").classList.toggle("open");
+}
+
+function pickPekerjaan(val) {
+  document.getElementById("fPekerjaan").value = val;
+  document.getElementById("csLabel").textContent = val;
+  document.getElementById("csTrigger").classList.add("filled");
+  document.getElementById("csTrigger").classList.remove("err");
+  document.getElementById("csPekerjaan").classList.remove("open");
+}
+
+// Close when clicking outside
+document.addEventListener("click", (e) => {
+  const cs = document.getElementById("csPekerjaan");
+  if (cs && !cs.contains(e.target)) {
+    cs.classList.remove("open");
+  }
+});
+
+//Instansi
 let _instItems = [],
   _instIdx = -1;
 
@@ -273,31 +396,6 @@ function hiDDInst(its) {
   its.forEach((el, i) => el.classList.toggle("hi", i === _instIdx));
 }
 
-// Suggestion
-function applySugg() {
-  if (!_sugg) return;
-  sf("fInst", _sugg.instansi, 1);
-  sf("fJab", _sugg.jabatan, 1);
-  sf("fWa", _sugg.no_wa, 1);
-  sf("fEmail", _sugg.email, 1);
-  document.querySelectorAll(".kep").forEach((el) => {
-    el.classList.remove("on");
-    el.querySelector("input").checked = false;
-  });
-  dismissSugg();
-}
-
-function dismissSugg() {
-  document.getElementById("suggBanner").classList.remove("show");
-  _sugg = null;
-}
-
-function sf(id, v, mark) {
-  const el = document.getElementById(id);
-  el.value = v || "";
-  el.classList.toggle("filled", !!mark && !!v);
-}
-
 // Checkbox
 function toggleKep(lbl) {
   setTimeout(
@@ -348,6 +446,7 @@ let _countdownTimer = null;
 // Submit
 function submitForm() {
   const nama = document.getElementById("fNama").value.trim();
+  const pekerjaan = document.getElementById("fPekerjaan").value;
   const inst = document.getElementById("fInst").value.trim();
   const jab = document.getElementById("fJab").value.trim();
   const noWa = document.getElementById("fWa").value.trim();
@@ -359,6 +458,11 @@ function submitForm() {
   let valid = true;
   if (!nama) {
     shake("fNama");
+    valid = false;
+  }
+  if (!pekerjaan) {
+    shakeEl(document.getElementById("csTrigger"));
+    document.getElementById("csTrigger").classList.add("err");
     valid = false;
   }
   if (!inst) {
@@ -392,13 +496,6 @@ function submitForm() {
     valid = false;
   }
 
-  // if (!kep.length) {
-  //   shakeEl(document.querySelector(".kep-list"));
-  //   document.querySelector(".kep-list").classList.add("err");
-  //   valid = false;
-  // }
-
-  // Validate "Lainnya" textfield
   if (
     document.getElementById("kepLainnya").checked &&
     !document.getElementById("fLainnya").value.trim()
@@ -417,8 +514,8 @@ function submitForm() {
     try {
       const queueNum = getNextQueueNumber();
       dbRun(
-        `INSERT INTO tamu(nama,instansi,jabatan,no_wa,email,keperluan,no_antrian) VALUES(?,?,?,?,?,?,?)`,
-        [nama, inst, jab, noWa, email, kep.join("|"), queueNum],
+        `INSERT INTO tamu(nama,instansi,jabatan,no_wa,email,pekerjaan,keperluan,no_antrian) VALUES(?,?,?,?,?,?,?,?)`,
+        [nama, inst, jab, noWa, email, pekerjaan, kep.join("|"), queueNum],
       );
       document.getElementById("sucName").textContent = nama;
       document.getElementById("qtNumber").textContent = queueNum;
@@ -461,6 +558,9 @@ function resetForm() {
     el.classList.remove("on", "err"); // add "err" here
     el.querySelector("input").checked = false;
   });
+  document.getElementById("fPekerjaan").value = "";
+  document.getElementById("csLabel").textContent = "Pilih pekerjaan…";
+  document.getElementById("csTrigger").classList.remove("filled", "err");
   document.querySelector(".kep-list").classList.remove("err");
   document.getElementById("fieldLainnya").classList.remove("show");
   dismissSugg();
@@ -489,12 +589,67 @@ function esc(s) {
     .replace(/>/g, "&gt;");
 }
 
+// Standard Levenshtein distance
+function levenshtein(a, b) {
+  const m = a.length,
+    n = b.length;
+  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] =
+        a[i - 1] === b[j - 1]
+          ? dp[i - 1][j - 1]
+          : 1 + Math.min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]);
+    }
+  }
+  return dp[m][n];
+}
+
+// Compares typed query against the START of a word (same length as query),
+// so partial typing + small typos still score high
+function prefixSimilarity(query, word) {
+  query = query.toLowerCase();
+  word = word.toLowerCase();
+  if (!word.length) return 0;
+  const prefix = word.slice(0, query.length);
+  const dist = levenshtein(query, prefix);
+  const maxLen = Math.max(query.length, prefix.length);
+  return maxLen === 0 ? 0 : 1 - dist / maxLen;
+}
+
+function nameSimilarity(query, fullName) {
+  const queryWords = query.trim().split(/\s+/);
+  const nameWords = fullName.trim().split(/\s+/);
+
+  const perWordScores = queryWords.map((qw) => {
+    let best = 0;
+    for (const nw of nameWords) {
+      const s = prefixSimilarity(qw, nw);
+      if (s > best) best = s;
+    }
+    return best;
+  });
+
+  // Every typed word must individually clear a lower bar (e.g. 70%)
+  const allWordsPass = perWordScores.every((s) => s >= 0.8);
+  if (!allWordsPass) return 0; // reject immediately if any word is way off
+
+  // Return the average as the "display" score, but gating already happened above
+  return perWordScores.reduce((a, b) => a + b, 0) / perWordScores.length;
+}
+
 ["fNama", "fInst", "fJab", "fWa", "fEmail", "fLainnya"].forEach((id) => {
   const el = document.getElementById(id);
   if (el) {
     el.addEventListener("focus", () => el.classList.remove("err"));
     el.addEventListener("input", () => el.classList.remove("err"));
   }
+});
+
+document.getElementById("fPekerjaan").addEventListener("change", function () {
+  this.classList.remove("err");
 });
 
 document.querySelectorAll("input[name=kep]").forEach((cb) => {
