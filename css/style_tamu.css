@@ -152,18 +152,6 @@ body {
   max-width: 680px;
 }
 
-/* .hero-emblem {
-  width: auto;
-  height: 85px;
-  margin: 0 auto 40px;
-  background: var(--navy);
-  border-radius: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-} */
-
 .hero-emblem {
   width: 540px;
   height: 85px;
@@ -244,6 +232,48 @@ body {
 
 .card-body {
   padding: 34px 34px 30px;
+  position: relative;
+}
+
+/* .card-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+} */
+
+.btn-reset {
+  order: 2;
+  display: flex;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: #fff;
+  border: 1.5px solid var(--g200);
+  border-radius: 8px;
+  font:
+    600 12px/1 "Plus Jakarta Sans",
+    sans-serif;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--g600);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-reset:hover {
+  border-color: var(--navy2);
+  /* color: var(--ink); */
+  background: #f3f4f6;
+}
+
+.reset-icon {
+  display: block;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
 }
 
 .sugg {
@@ -449,6 +479,7 @@ body {
   flex: 1;
   height: 1px;
   background: var(--g200);
+  order: 1;
 }
 
 .sec .req {
@@ -543,6 +574,12 @@ body {
   color: var(--ink);
 }
 
+.ddi .dn-inst {
+  /* font-weight: 500; */
+  font-size: 13px;
+  /* color: var(--ink); */
+}
+
 .ddi .ds {
   font-size: 11px;
   color: var(--g400);
@@ -609,10 +646,6 @@ input.err {
   gap: 10px 14px;
 }
 
-/* .kep-list.err {
-  border-color: var(--red);
-} */
-
 .kep {
   display: flex;
   align-items: center;
@@ -633,7 +666,7 @@ input.err {
 }
 
 .kep.on {
-  border-color: var(--navy);
+  border-color: var(--navy2);
   background: var(--navy3);
   box-shadow: 0 0 0 3px rgba(11, 122, 110, 0.08);
 }

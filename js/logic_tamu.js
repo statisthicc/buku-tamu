@@ -308,12 +308,22 @@ function togglePekerjaanDD() {
   document.getElementById("csPekerjaan").classList.toggle("open");
 }
 
+// function pickPekerjaan(val) {
+//   document.getElementById("fPekerjaan").value = val;
+//   document.getElementById("csLabel").textContent = val;
+//   document.getElementById("csTrigger").classList.add("filled");
+//   document.getElementById("csTrigger").classList.remove("err");
+//   document.getElementById("csPekerjaan").classList.remove("open");
+// }
+
 function pickPekerjaan(val) {
   document.getElementById("fPekerjaan").value = val;
   document.getElementById("csLabel").textContent = val;
   document.getElementById("csTrigger").classList.add("filled");
   document.getElementById("csTrigger").classList.remove("err");
   document.getElementById("csPekerjaan").classList.remove("open");
+
+  toggleJabatanField(val);
 }
 
 // Close when clicking outside
@@ -323,6 +333,23 @@ document.addEventListener("click", (e) => {
     cs.classList.remove("open");
   }
 });
+
+function toggleJabatanField(pekerjaan) {
+  const jabatanInput = document.getElementById("fJab");
+  // const jabReq = document.getElementById("jabReq");
+  const isUmum = pekerjaan === "Masyarakat Umum";
+
+  jabatanInput.disabled = isUmum;
+  jabatanInput.classList.remove("err");
+  // jabReq.style.display = isUmum ? "none" : "inline-block";
+
+  if (isUmum) {
+    jabatanInput.value = "";
+    jabatanInput.placeholder = "-";
+  } else {
+    jabatanInput.placeholder = "Jabatan Anda…";
+  }
+}
 
 //Instansi
 let _instItems = [],
@@ -353,7 +380,7 @@ function onInst(v) {
   dd.innerHTML = matches
     .map(
       (m, i) =>
-        `<div class="ddi" onmousedown="pickInst(${i})"><div class="dn">${esc(m)}</div></div>`,
+        `<div class="ddi" onmousedown="pickInst(${i})"><div class="dn-inst">${esc(m)}</div></div>`,
     )
     .join("");
   dd.classList.add("open");
@@ -460,16 +487,19 @@ function submitForm() {
     shake("fNama");
     valid = false;
   }
+
   if (!pekerjaan) {
     shakeEl(document.getElementById("csTrigger"));
     document.getElementById("csTrigger").classList.add("err");
     valid = false;
   }
+
   if (!inst) {
     shake("fInst");
     valid = false;
   }
-  if (!jab) {
+
+  if (!document.getElementById("fJab").disabled && !jab) {
     shake("fJab");
     valid = false;
   }
@@ -563,8 +593,40 @@ function resetForm() {
   document.getElementById("csTrigger").classList.remove("filled", "err");
   document.querySelector(".kep-list").classList.remove("err");
   document.getElementById("fieldLainnya").classList.remove("show");
+  document.getElementById("fJab").disabled = false;
+  document.getElementById("fJab").placeholder = "Jabatan Anda…";
+  document.getElementById("jabReq").style.display = "inline-block";
   dismissSugg();
   closeDD();
+  document.getElementById("fNama").focus();
+}
+
+function resetAllInputs() {
+  if (!confirm("Hapus semua isian?")) return;
+  ["fNama", "fInst", "fJab", "fWa", "fEmail", "fLainnya"].forEach((id) => {
+    const el = document.getElementById(id);
+    el.value = "";
+    el.classList.remove("filled", "err");
+  });
+
+  document.querySelectorAll(".kep").forEach((el) => {
+    el.classList.remove("on", "err");
+    el.querySelector("input").checked = false;
+  });
+
+  document.getElementById("fieldLainnya").classList.remove("show");
+
+  // Reset Pekerjaan Utama custom dropdown
+  document.getElementById("fPekerjaan").value = "";
+  document.getElementById("csLabel").textContent = "Pilih pekerjaan…";
+  document.getElementById("csTrigger").classList.remove("filled", "err");
+  document.getElementById("fJab").disabled = false;
+  document.getElementById("fJab").placeholder = "Jabatan Anda…";
+  document.getElementById("jabReq").style.display = "inline-block";
+  dismissSugg();
+  closeDD();
+  closeDDInst();
+
   document.getElementById("fNama").focus();
 }
 
