@@ -221,13 +221,14 @@
 
           <button class="btn-submit" id="btnDaftar" onclick="submitForm()">
             <span id="btnLabel">Daftar Kunjungan</span>
-            <span class="arr" id="btnArr"
-              ><img src="img/log-in.svg" alt=""
-            /></span>
+            <span class="arr" id="btnArr">
+              <img src="img/log-in.svg" alt="" id="btnArrIcon" />
+              <span id="btnSpinner" class="spin" style="display: none"></span>
+            </span>
           </button>
         </div>
         <div class="suc" id="suc">
-          <div class="suc-ring">✓</div>
+          <div class="suc-ring"><img src="img/check.svg" alt="" /></div>
           <h2>Terima Kasih!</h2>
           <p>Kunjungan <b id="sucName"></b> telah berhasil dicatat.</p>
           <div class="queue-ticket" id="queueTicket">

@@ -189,7 +189,7 @@ body {
 }
 
 .hero-line {
-  width: 48px;
+  width: 64px;
   height: 3px;
   margin: 16px auto;
   background: linear-gradient(90deg, var(--navy), var(--gold2));
@@ -211,7 +211,8 @@ body {
 
 .hero p {
   font-size: 15px;
-  color: var(--g600);
+  font-weight: 500;
+  color: var(--ink);
   line-height: 1.7;
 }
 
@@ -402,9 +403,13 @@ body {
   box-shadow: 0 0 0 3px rgba(58, 110, 165, 0.15);
 }
 
+.cs-trigger.has-value {
+  color: var(--ink);
+}
+
 .cs-trigger.filled {
-  background: #fff;
-  border-color: #d8dce1;
+  background: var(--navy3);
+  border-color: var(--navy4);
   color: var(--ink);
 }
 
@@ -630,7 +635,10 @@ textarea:disabled {
 input.filled {
   background: var(--navy3);
   border-color: var(--navy4);
-  color: #064e3b;
+}
+
+input.filled:hover {
+  border-color: var(--navy2);
 }
 
 input.err {
@@ -776,7 +784,7 @@ input.err {
 
 .btn-submit:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(58, 110, 165, 0.45);
+  /* box-shadow: 0 10px 28px rgba(58, 110, 165, 0.45); */
 }
 
 .btn-submit:active {
@@ -791,7 +799,14 @@ input.err {
 .arr {
   font-size: 18px;
   transition: 0.2s;
+  display: inline-flex;
+  align-items: center;
 }
+
+/* .arr {
+  font-size: 18px;
+  transition: 0.2s;
+} */
 
 .btn-submit:hover .arr {
   transform: translateX(4px);
@@ -833,7 +848,7 @@ input.err {
   justify-content: center;
   font-size: 32px;
   color: #fff;
-  box-shadow: 0 8px 28px rgba(11, 122, 110, 0.38);
+  /* box-shadow: 0 8px 28px rgba(11, 122, 110, 0.38); */
   animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -844,7 +859,7 @@ input.err {
 }
 
 .suc h2 {
-  font-family: "Fraunces", "Georgia", serif;
+  font-family: "Plus Jakarta Sans", "Georgia", serif;
   font-size: 24px;
   font-weight: 700;
   color: var(--ink);
@@ -863,12 +878,12 @@ input.err {
 
 /* Queue Ticket */
 .queue-ticket {
-  background: linear-gradient(135deg, #064e3b, #0b7a6e);
+  background: linear-gradient(135deg, var(--navy), var(--navy2));
   border-radius: 18px;
   padding: 22px 32px;
   margin: 4px 0;
   min-width: 220px;
-  box-shadow: 0 8px 28px rgba(11, 122, 110, 0.3);
+  /* box-shadow: 0 8px 28px rgba(11, 122, 110, 0.3); */
   position: relative;
   overflow: hidden;
 }
@@ -890,15 +905,15 @@ input.err {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2.5px;
-  color: rgba(255, 255, 255, 0.6);
+  color: #ffffff;
   margin-bottom: 6px;
 }
 
 .qt-number {
-  font-family: "Fraunces", "Georgia", serif;
+  font-family: "Plus Jakarta Sans", "Georgia", serif;
   font-size: 56px;
   font-weight: 700;
-  color: #fff;
+  color: #ffffff;
   line-height: 1;
   letter-spacing: -1px;
   animation: countUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -917,7 +932,7 @@ input.err {
 
 .qt-hint {
   font-size: 11.5px;
-  color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
   margin-top: 6px;
 }
 
@@ -965,8 +980,18 @@ input.err {
   border: 2.5px solid rgba(255, 255, 255, 0.3);
   border-top-color: #fff;
   border-radius: 50%;
-  animation: rot 0.7s linear infinite;
+  animation: rot 0.7s linear infinite; /* remove this line if you don't want rotation */
 }
+
+/* .spin {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: rot 0.7s linear infinite;
+} */
 
 @keyframes rot {
   to {

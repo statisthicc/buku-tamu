@@ -135,38 +135,6 @@ let _items = [],
   _timer,
   _nameCache = null;
 
-// function onNama(v) {
-//   dismissSugg();
-//   clearTimeout(_timer);
-//   if (!v.trim()) {
-//     closeDD();
-//     return;
-//   }
-//   _timer = setTimeout(() => {
-//     const rows = dbAll(
-//       `SELECT t.* FROM tamu t INNER JOIN (SELECT nama,MAX(id) mid FROM tamu WHERE nama LIKE ? COLLATE NOCASE GROUP BY LOWER(nama)) l ON t.id=l.mid ORDER BY t.timestamp DESC LIMIT 6`,
-//       [v.trim() + "%"],
-//     );
-//     _items = rows.map((r) => ({
-//       ...r,
-//       keperluan: r.keperluan ? r.keperluan.split("|") : [],
-//     }));
-//     _idx = -1;
-//     const dd = document.getElementById("dd");
-//     if (!rows.length) {
-//       closeDD();
-//       return;
-//     }
-//     dd.innerHTML = _items
-//       .map(
-//         (m, i) =>
-//           `<div class="ddi" onmousedown="pick(${i})"><div class="dn">${esc(m.nama)}</div><div class="ds">${[m.instansi, m.jabatan].filter(Boolean).join(" · ") || "&nbsp;"}</div></div>`,
-//       )
-//       .join("");
-//     dd.classList.add("open");
-//   }, 140);
-// }
-
 function refreshNameCache() {
   _nameCache = dbAll(
     `SELECT t.* FROM tamu t INNER JOIN (
@@ -264,6 +232,12 @@ function applySugg() {
   sf("fJab", _sugg.jabatan, 1);
   sf("fWa", _sugg.no_wa, 1);
   sf("fEmail", _sugg.email, 1);
+
+  // Apply Pekerjaan if it exists in the suggested record
+  if (_sugg.pekerjaan) {
+    applyPekerjaanSugg(_sugg.pekerjaan);
+  }
+
   document.querySelectorAll(".kep").forEach((el) => {
     el.classList.remove("on");
     el.querySelector("input").checked = false;
@@ -319,6 +293,18 @@ function togglePekerjaanDD() {
 function pickPekerjaan(val) {
   document.getElementById("fPekerjaan").value = val;
   document.getElementById("csLabel").textContent = val;
+  document.getElementById("csTrigger").classList.add("has-value");
+  document.getElementById("csTrigger").classList.remove("filled");
+  document.getElementById("csTrigger").classList.remove("err");
+  document.getElementById("csPekerjaan").classList.remove("open");
+
+  toggleJabatanField(val);
+}
+
+function applyPekerjaanSugg(val) {
+  document.getElementById("fPekerjaan").value = val;
+  document.getElementById("csLabel").textContent = val;
+  document.getElementById("csTrigger").classList.add("has-value");
   document.getElementById("csTrigger").classList.add("filled");
   document.getElementById("csTrigger").classList.remove("err");
   document.getElementById("csPekerjaan").classList.remove("open");
@@ -539,7 +525,9 @@ function submitForm() {
   const btn = document.getElementById("btnDaftar");
   btn.disabled = true;
   document.getElementById("btnLabel").textContent = "Menyimpan…";
-  document.getElementById("btnArr").className = "spin";
+  // document.getElementById("btnArr").className = "spin";
+  document.getElementById("btnArrIcon").style.display = "none";
+  document.getElementById("btnSpinner").style.display = "inline-block";
   setTimeout(() => {
     try {
       const queueNum = getNextQueueNumber();
@@ -556,8 +544,8 @@ function submitForm() {
     } finally {
       btn.disabled = false;
       document.getElementById("btnLabel").textContent = "Daftar Kunjungan";
-      document.getElementById("btnArr").className = "arr";
-      document.getElementById("btnArr").textContent = "→";
+      document.getElementById("btnSpinner").style.display = "none";
+      document.getElementById("btnArrIcon").style.display = "block";
     }
   }, 500);
 }
@@ -590,7 +578,9 @@ function resetForm() {
   });
   document.getElementById("fPekerjaan").value = "";
   document.getElementById("csLabel").textContent = "Pilih pekerjaan…";
-  document.getElementById("csTrigger").classList.remove("filled", "err");
+  document
+    .getElementById("csTrigger")
+    .classList.remove("filled", "err", "has-value");
   document.querySelector(".kep-list").classList.remove("err");
   document.getElementById("fieldLainnya").classList.remove("show");
   document.getElementById("fJab").disabled = false;
@@ -619,7 +609,9 @@ function resetAllInputs() {
   // Reset Pekerjaan Utama custom dropdown
   document.getElementById("fPekerjaan").value = "";
   document.getElementById("csLabel").textContent = "Pilih pekerjaan…";
-  document.getElementById("csTrigger").classList.remove("filled", "err");
+  document
+    .getElementById("csTrigger")
+    .classList.remove("filled", "err", "has-value");
   document.getElementById("fJab").disabled = false;
   document.getElementById("fJab").placeholder = "Jabatan Anda…";
   document.getElementById("jabReq").style.display = "inline-block";
@@ -707,6 +699,13 @@ function nameSimilarity(query, fullName) {
   if (el) {
     el.addEventListener("focus", () => el.classList.remove("err"));
     el.addEventListener("input", () => el.classList.remove("err"));
+  }
+});
+
+["fInst", "fJab", "fWa", "fEmail"].forEach((id) => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener("input", () => el.classList.remove("filled"));
   }
 });
 
