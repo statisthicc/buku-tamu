@@ -62,9 +62,15 @@ async function initDB() {
     CREATE INDEX IF NOT EXISTS idx_nama ON tamu(nama COLLATE NOCASE);
   `);
   // Migration: add columns if they don't exist
-  try { db.run("ALTER TABLE tamu ADD COLUMN no_antrian INTEGER DEFAULT 0"); } catch(e) {}
-  try { db.run("ALTER TABLE tamu ADD COLUMN selesai INTEGER DEFAULT 0"); } catch(e) {}
-  try { db.run("ALTER TABLE tamu ADD COLUMN email TEXT DEFAULT ''"); } catch(e) {}
+  try {
+    db.run("ALTER TABLE tamu ADD COLUMN no_antrian INTEGER DEFAULT 0");
+  } catch (e) {}
+  try {
+    db.run("ALTER TABLE tamu ADD COLUMN selesai INTEGER DEFAULT 0");
+  } catch (e) {}
+  try {
+    db.run("ALTER TABLE tamu ADD COLUMN email TEXT DEFAULT ''");
+  } catch (e) {}
 
   clearInterval(_pt);
   fill.style.width = "100%";
@@ -182,9 +188,15 @@ async function doLoad() {
   try {
     db = new SQL.Database(r.data);
     // Migration after loading
-    try { db.run("ALTER TABLE tamu ADD COLUMN no_antrian INTEGER DEFAULT 0"); } catch(e) {}
-    try { db.run("ALTER TABLE tamu ADD COLUMN selesai INTEGER DEFAULT 0"); } catch(e) {}
-    try { db.run("ALTER TABLE tamu ADD COLUMN email TEXT DEFAULT ''"); } catch(e) {}
+    try {
+      db.run("ALTER TABLE tamu ADD COLUMN no_antrian INTEGER DEFAULT 0");
+    } catch (e) {}
+    try {
+      db.run("ALTER TABLE tamu ADD COLUMN selesai INTEGER DEFAULT 0");
+    } catch (e) {}
+    try {
+      db.run("ALTER TABLE tamu ADD COLUMN email TEXT DEFAULT ''");
+    } catch (e) {}
     persist();
     renderDash();
     renderTable();
@@ -201,9 +213,14 @@ const _origDbRun = dbRun;
 function dbRunWithSave(sql, p = []) {
   db.run(sql, p);
   persist();
-  const st = DBManager.status();
-  if (st.active) autoSave();
+  if (DBManager.status().active) autoSave();
 }
+// function dbRunWithSave(sql, p = []) {
+//   db.run(sql, p);
+//   persist();
+//   const st = DBManager.status();
+//   if (st.active) autoSave();
+// }
 
 /* ── Nav ───────────────────────────────────────────────────────────────────── */
 function showSec(sec, btn) {
@@ -223,14 +240,17 @@ function updateNavCnt() {
   );
 }
 function updateAntrianBadge() {
-  const pending = dbS("SELECT COUNT(*) FROM tamu WHERE date(timestamp)=date('now','localtime') AND selesai=0");
+  const pending = dbS(
+    "SELECT COUNT(*) FROM tamu WHERE date(timestamp)=date('now','localtime') AND selesai=0",
+  );
   const el = document.getElementById("navAntrian");
   el.textContent = pending;
   el.classList.toggle("pulse", pending > 0);
 }
 function refresh() {
   const dashVis = document.getElementById("sec-dash").style.display !== "none";
-  const antrianVis = document.getElementById("sec-antrian").style.display !== "none";
+  const antrianVis =
+    document.getElementById("sec-antrian").style.display !== "none";
   if (dashVis) renderDash();
   else if (antrianVis) renderAntrian();
   else renderTable();
@@ -248,20 +268,25 @@ function toggleSelesai(id) {
   if (st.active) autoSave();
   // Re-render the active section
   const dashVis = document.getElementById("sec-dash").style.display !== "none";
-  const antrianVis = document.getElementById("sec-antrian").style.display !== "none";
+  const antrianVis =
+    document.getElementById("sec-antrian").style.display !== "none";
   if (dashVis) renderDash();
   if (antrianVis) renderAntrian();
-  if (document.getElementById("sec-tamu").style.display !== "none") renderTable();
+  if (document.getElementById("sec-tamu").style.display !== "none")
+    renderTable();
   updateAntrianBadge();
-  toast(newVal ? "✅" : "🔄", newVal ? "Pelayanan ditandai selesai." : "Status dikembalikan ke menunggu.");
+  toast(
+    newVal ? "✅" : "🔄",
+    newVal ? "Pelayanan ditandai selesai." : "Status dikembalikan ke menunggu.",
+  );
 }
 
 /* ── Status Toggle HTML ────────────────────────────────────────────────────── */
 function statusToggleHTML(id, selesai) {
-  return `<label class="toggle-wrap" title="${selesai ? 'Selesai' : 'Menunggu'}">
-    <input type="checkbox" class="toggle-input" ${selesai ? 'checked' : ''} onchange="toggleSelesai(${id})">
+  return `<label class="toggle-wrap" title="${selesai ? "Selesai" : "Menunggu"}">
+    <input type="checkbox" class="toggle-input" ${selesai ? "checked" : ""} onchange="toggleSelesai(${id})">
     <span class="toggle-slider"></span>
-    <span class="toggle-label ${selesai ? 'tl-done' : 'tl-wait'}">${selesai ? 'Selesai' : 'Menunggu'}</span>
+    <span class="toggle-label ${selesai ? "tl-done" : "tl-wait"}">${selesai ? "Selesai" : "Menunggu"}</span>
   </label>`;
 }
 
@@ -336,7 +361,7 @@ function renderDash() {
   rb.innerHTML = recent
     .map(
       (r, i) =>
-        `<tr class="${r.selesai ? 'row-done' : ''}"><td class="td-num">${i + 1}</td><td>${antrianBadgeHTML(r.no_antrian)}</td><td><div class="td-n">${esc(r.nama)}</div><div class="td-i">${esc(r.instansi || "—")}</div></td><td>${r.keperluan.map((k) => `<span class="badge ${bc(k)}">${esc(k)}</span>`).join("")}</td><td><a class="wa-l" href="https://wa.me/${waNum(r.no_wa)}" target="_blank">${esc(r.no_wa)}</a>${r.email ? `<div class="td-i"><a href="mailto:${esc(r.email)}" style="color:var(--g400);text-decoration:none">${esc(r.email)}</a></div>` : ''}</td><td class="td-t">${fmtDt(r.timestamp)}</td><td>${statusToggleHTML(r.id, r.selesai)}</td></tr>`,
+        `<tr class="${r.selesai ? "row-done" : ""}"><td class="td-num">${i + 1}</td><td>${antrianBadgeHTML(r.no_antrian)}</td><td><div class="td-n">${esc(r.nama)}</div><div class="td-i">${esc(r.instansi || "—")}</div></td><td>${r.keperluan.map((k) => `<span class="badge ${bc(k)}">${esc(k)}</span>`).join("")}</td><td><a class="wa-l" href="https://wa.me/${waNum(r.no_wa)}" target="_blank">${esc(r.no_wa)}</a>${r.email ? `<div class="td-i"><a href="mailto:${esc(r.email)}" style="color:var(--g400);text-decoration:none">${esc(r.email)}</a></div>` : ""}</td><td class="td-t">${fmtDt(r.timestamp)}</td><td>${statusToggleHTML(r.id, r.selesai)}</td></tr>`,
     )
     .join("");
 }
@@ -346,8 +371,8 @@ function renderAntrian() {
   const rows = dbAll(
     "SELECT * FROM tamu WHERE date(timestamp)=date('now','localtime') ORDER BY no_antrian ASC",
   ).map(parseKep);
-  const pending = rows.filter(r => !r.selesai).length;
-  const done = rows.filter(r => r.selesai).length;
+  const pending = rows.filter((r) => !r.selesai).length;
+  const done = rows.filter((r) => r.selesai).length;
   document.getElementById("antrianSub").textContent =
     `${rows.length} tamu hari ini · ${pending} menunggu · ${done} selesai`;
   updateAntrianBadge();
@@ -369,7 +394,7 @@ function renderAntrian() {
   tb.innerHTML = rows
     .map(
       (r) =>
-        `<tr class="${r.selesai ? 'row-done' : ''}">
+        `<tr class="${r.selesai ? "row-done" : ""}">
           <td>${antrianBadgeHTML(r.no_antrian)}</td>
           <td><div class="td-n">${esc(r.nama)}</div><div class="td-i">${esc(r.instansi || "—")}</div></td>
           <td>${r.keperluan.map((k) => `<span class="badge ${bc(k)}">${esc(k)}</span>`).join("")}</td>
@@ -418,7 +443,7 @@ function renderTable() {
   tb.innerHTML = page
     .map(
       (r, i) =>
-        `<tr class="${r.selesai ? 'row-done' : ''}"><td class="td-num">${start + i + 1}</td><td>${antrianBadgeHTML(r.no_antrian)}</td><td><div class="td-n">${esc(r.nama)}</div><div class="td-i">${esc(r.instansi || "—")}</div></td><td class="td-j">${esc(r.jabatan || "—")}</td><td>${r.keperluan.map((k) => `<span class="badge ${bc(k)}">${esc(k)}</span>`).join("")}</td><td><a class="wa-l" href="https://wa.me/${waNum(r.no_wa)}" target="_blank">${esc(r.no_wa)}</a>${r.email ? `<div class="td-i"><a href="mailto:${esc(r.email)}" style="color:var(--g400);text-decoration:none">${esc(r.email)}</a></div>` : ''}</td><td class="td-t">${fmtDt(r.timestamp)}</td><td>${statusToggleHTML(r.id, r.selesai)}</td><td><button class="del-btn" onclick="doDelete(${r.id})">🗑</button></td></tr>`,
+        `<tr class="${r.selesai ? "row-done" : ""}"><td class="td-num">${start + i + 1}</td><td>${antrianBadgeHTML(r.no_antrian)}</td><td><div class="td-n">${esc(r.nama)}</div><div class="td-i">${esc(r.instansi || "—")}</div></td><td class="td-j">${esc(r.jabatan || "—")}</td><td>${r.keperluan.map((k) => `<span class="badge ${bc(k)}">${esc(k)}</span>`).join("")}</td><td><a class="wa-l" href="https://wa.me/${waNum(r.no_wa)}" target="_blank">${esc(r.no_wa)}</a>${r.email ? `<div class="td-i"><a href="mailto:${esc(r.email)}" style="color:var(--g400);text-decoration:none">${esc(r.email)}</a></div>` : ""}</td><td class="td-t">${fmtDt(r.timestamp)}</td><td>${statusToggleHTML(r.id, r.selesai)}</td><td><button class="del-btn" onclick="doDelete(${r.id})">🗑</button></td></tr>`,
     )
     .join("");
   renderPager(total);
@@ -454,10 +479,7 @@ function doDelete(id) {
   _delId = id;
   document.getElementById("delModal").classList.add("open");
   document.getElementById("btnDel").onclick = () => {
-    db.run("DELETE FROM tamu WHERE id=?", [_delId]);
-    persist();
-    const st = DBManager.status();
-    if (st.active) autoSave();
+    dbRunWithSave("DELETE FROM tamu WHERE id=?", [_delId]);
     closeMdl();
     renderTable();
     renderDash();
@@ -465,17 +487,30 @@ function doDelete(id) {
     toast("🗑", "Data berhasil dihapus.");
   };
 }
+// function doDelete(id) {
+//   _delId = id;
+//   document.getElementById("delModal").classList.add("open");
+//   document.getElementById("btnDel").onclick = () => {
+//     db.run("DELETE FROM tamu WHERE id=?", [_delId]);
+//     persist();
+//     const st = DBManager.status();
+//     if (st.active) autoSave();
+//     closeMdl();
+//     renderTable();
+//     renderDash();
+//     updateAntrianBadge();
+//     toast("🗑", "Data berhasil dihapus.");
+//   };
+// }
 function closeMdl() {
   document.getElementById("delModal").classList.remove("open");
   _delId = null;
 }
+
 function clearAll() {
   document.getElementById("clearModal").classList.add("open");
   document.getElementById("btnClear").onclick = () => {
-    db.run("DELETE FROM tamu");
-    persist();
-    const st = DBManager.status();
-    if (st.active) autoSave();
+    dbRunWithSave("DELETE FROM tamu");
     closeMdl2();
     renderTable();
     renderDash();
@@ -484,6 +519,22 @@ function clearAll() {
     toast("🗑", "Semua data berhasil dihapus.");
   };
 }
+// function clearAll() {
+//   document.getElementById("clearModal").classList.add("open");
+//   document.getElementById("btnClear").onclick = () => {
+//     db.run("DELETE FROM tamu");
+//     persist();
+//     const st = DBManager.status();
+//     if (st.active) autoSave();
+//     closeMdl2();
+//     renderTable();
+//     renderDash();
+//     renderAntrian();
+//     updateAntrianBadge();
+//     toast("🗑", "Semua data berhasil dihapus.");
+//   };
+// }
+
 function closeMdl2() {
   document.getElementById("clearModal").classList.remove("open");
 }
@@ -498,7 +549,18 @@ function exportCSV() {
     return;
   }
   const lines = [
-    ["No", "No. Antrian", "Nama", "Instansi", "Jabatan", "Keperluan", "No. WA", "Email", "Status", "Waktu"],
+    [
+      "No",
+      "No. Antrian",
+      "Nama",
+      "Instansi",
+      "Jabatan",
+      "Keperluan",
+      "No. WA",
+      "Email",
+      "Status",
+      "Waktu",
+    ],
     ...rows.map((r, i) => [
       i + 1,
       r.no_antrian || "",

@@ -70,7 +70,7 @@ async function tryLoadFromFolder() {
   const st = DBManager.status();
   if (!st.supported || !st.folderSet) return false;
   const r = await DBManager.load(DB_FILENAME);
-  if (r.success && r.data) {
+  if (r.ok && r.data) {
     try {
       db = new SQL.Database(r.data);
       return true;
@@ -92,7 +92,8 @@ function persist() {
   // Auto-save ke folder jika sudah dipilih
   const st = DBManager.status();
   if (st.supported && st.folderSet) {
-    DBManager.save(() => db.export(), DB_FILENAME).catch(console.warn);
+    // DBManager.save(() => db.export(), DB_FILENAME).catch(console.warn);
+    DBManager.save(DB_FILENAME, () => db.export()).catch(console.warn);
   }
 }
 

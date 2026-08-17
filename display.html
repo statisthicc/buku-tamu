@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Layar Antrian — PST BPS Kab. Buton Utara</title>
+    <link rel="stylesheet" href="css/style_display.css" />
+  </head>
+  <body>
+    <div id="boot">
+      <div class="b-logo">Layar <span>Antrian</span></div>
+      <div class="b-bar"><div class="b-fill" id="bootFill"></div></div>
+      <div class="b-sub" id="bootSub">Memuat data…</div>
+    </div>
+
+    <div class="tv">
+      <!-- HEADER -->
+      <div class="tv-header">
+        <img src="img/log-bps.png" alt="" class="tv-logo" />
+        <img src="img/logo-pst.png" alt="" class="tv-logo tv-logo-pst" />
+      </div>
+
+      <!-- BODY -->
+      <div class="tv-body">
+        <div class="tv-col tv-col-left" id="tvColLeft">
+          <div class="poster-box">
+            <!-- reserved space: posters / info / ads, 16:9 -->
+          </div>
+        </div>
+        <div class="tv-col tv-col-right" id="tvColRight">
+          <div class="tv-card tv-card-serving">
+            <div class="tvc-label">Nomor Antrian Saat Ini</div>
+            <div class="tvc-number" id="servingNumber">—</div>
+          </div>
+          <div class="tv-card tv-card-next">
+            <div class="tvc-label">Nomor Antrian Berikutnya</div>
+            <div class="tvc-queue" id="queueList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="tv-footer">
+        <div class="tv-datetime">
+          <div class="tv-date" id="tvDate">Senin, 17 Agustus 2026</div>
+          <div class="tv-time" id="tvTime">--.-- Wita</div>
+        </div>
+        <div class="tv-marquee">
+          <div class="tv-marquee-track" id="marqueeTrack">
+            Silakan menunggu nomor antrian Anda dipanggil oleh petugas
+            &nbsp;•&nbsp; Pelayanan Statistik Terpadu BPS Kabupaten Buton Utara
+            &nbsp;•&nbsp;
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="libs/sql-wasm.js"></script>
+    <script src="js/db-manager.js"></script>
+    <script src="js/logic_display.js"></script>
+  </body>
+</html>
