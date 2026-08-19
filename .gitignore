@@ -3,6 +3,8 @@ img/*
 
 assets/*
 !assets/.gitkeep
+!assets/display/
+!assets/carousel/
 
 assets/display/*
 !assets/display/.gitkeep
