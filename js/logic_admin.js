@@ -78,6 +78,7 @@ async function initDB() {
   renderDash();
   updateNavCnt();
   updateAntrianBadge();
+  initMediaFolder();
 }
 
 /* ── Persist ────────────────────────────────────────────────────────────────── */
@@ -582,6 +583,60 @@ function exportCSV() {
   a.download = `buku-tamu-${new Date().toISOString().slice(0, 10)}.csv`;
   a.click();
   toast("⬇", "File CSV berhasil diunduh.");
+}
+
+async function initMediaFolder() {
+  await MediaManager.init();
+  updateMediaFolderBar(MediaManager.status());
+}
+
+function updateMediaFolderBar(st) {
+  const bar = document.getElementById("mediaFolderBar");
+  const titl = document.getElementById("mfbTitle");
+  const desc = document.getElementById("mfbDesc");
+  const setB = document.getElementById("mfbSetBtn");
+  const clrB = document.getElementById("mfbClrBtn");
+
+  if (!st.supported) {
+    bar.className = "folder-bar inactive";
+    titl.textContent = "File System Access tidak didukung browser ini";
+    desc.textContent = "Gunakan Chrome atau Edge terbaru.";
+    setB.style.display = "none";
+    clrB.style.display = "none";
+    return;
+  }
+  if (st.active) {
+    bar.className = "folder-bar active";
+    titl.textContent = `📂 Folder aktif: ${st.name}`;
+    desc.textContent =
+      "Poster/video akan tampil otomatis di layar TV dari folder ini.";
+    setB.textContent = "↺ Ganti Folder";
+    clrB.style.display = "";
+  } else {
+    bar.className = "folder-bar inactive";
+    titl.textContent = "Folder media display belum dipilih";
+    desc.textContent =
+      "Pilih folder assets/display/ agar poster/video otomatis tampil di layar TV.";
+    setB.textContent = "Pilih Folder assets/display/";
+    clrB.style.display = "none";
+  }
+}
+
+async function setMediaFolder() {
+  const ok = await MediaManager.selectFolder();
+  if (ok) {
+    updateMediaFolderBar(MediaManager.status());
+    toast(
+      "🖼️",
+      `Folder "${MediaManager.status().name}" dipilih untuk layar TV.`,
+    );
+  }
+}
+
+async function unsetMediaFolder() {
+  await MediaManager.clearFolder();
+  updateMediaFolderBar(MediaManager.status());
+  toast("🖼️", "Folder media dilepas.");
 }
 
 /* ── Helpers ─────────────────────────────────────────────────────────────────── */
