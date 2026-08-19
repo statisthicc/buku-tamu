@@ -1,2 +1,11 @@
-img/
-assets/
+img/*
+!img/.gitkeep
+
+assets/*
+!assets/.gitkeep
+
+assets/display/*
+!assets/display/.gitkeep
+
+assets/carousel/*
+!assets/carousel/.gitkeep
