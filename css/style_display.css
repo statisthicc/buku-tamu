@@ -148,34 +148,20 @@ body {
   min-width: 0;
 }
 
-.tv-col-right {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  min-width: 0;
-}
-
-.tv-col-left .poster-box {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: var(
-    --g100,
-    #f3f4f6
-  ); /* placeholder background until you add content */
+.poster-wrap {
+  flex: 1;
+  background: #000;
   border-radius: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--g400, #9ca3af);
-  font-size: 14px;
-  font-weight: 600;
+  overflow: hidden;
 }
 
 .poster-box {
   width: 100%;
   aspect-ratio: 16 / 9;
-  background: #000;
-  border-radius: 24px;
+  max-height: 100%;
   overflow: hidden;
   position: relative;
 }
@@ -195,8 +181,8 @@ body {
   cursor: pointer;
   transition: opacity 0.25s ease;
   z-index: 5;
-  opacity: 0; /* hidden by default */
-  pointer-events: none; /* prevents accidental interaction while invisible */
+  opacity: 0;
+  pointer-events: none;
 }
 
 .poster-box:hover .mute-btn {
@@ -215,13 +201,6 @@ body {
   display: block;
   filter: brightness(0) invert(1);
 }
-
-/* .mute-btn img {
-  width: 20px !important;
-  height: 20px !important;
-  display: block;
-  filter: brightness(0) invert(1);
-} */
 
 .poster-media {
   width: 100%;
@@ -260,6 +239,13 @@ body {
     600 13px "Plus Jakarta Sans",
     sans-serif;
   cursor: pointer;
+}
+
+.tv-col-right {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  min-width: 0;
 }
 
 .tv-card {
@@ -307,12 +293,6 @@ body {
     transform: scale(1.04);
   }
 }
-
-/* .tv-card-next {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-} */
 
 .tv-card-next {
   flex: 1;
@@ -382,7 +362,7 @@ body {
 .tv-datetime {
   background: var(--orange);
   color: var(--ink);
-  width: 220px; /* set exact width */
+  width: 240px;
   padding: 10px 20px;
   display: flex;
   flex-direction: column;
