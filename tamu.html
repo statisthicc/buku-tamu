@@ -20,7 +20,7 @@
     <div class="page">
       <div class="hero">
         <div class="hero-emblem">
-          <img src="img/log-bps.png" alt="" />
+          <img src="img/logo-bps.png" alt="" />
           <img src="img/logo-pst.png" alt="" />
         </div>
         <h1>Selamat datang di <em>BPS Kabupaten Buton Utara</em></h1>
@@ -49,10 +49,11 @@
             Data Diri
             <button
               class="btn-reset"
-              onclick="resetAllInputs()"
+              onclick="openResetModal()"
               title="Reset semua input"
             >
-              <img src="img/reload.svg" alt="" class="reset-icon" />
+              <span class="reset-icon"></span>
+              <!-- <img src="img/reload.svg" alt="" class="reset-icon" /> -->
               Reset
             </button>
           </div>
@@ -116,7 +117,9 @@
                 </div>
               </div>
               <div class="field">
-                <div class="lbl">Jabatan <span class="req">wajib</span></div>
+                <div class="lbl">
+                  Jabatan <span class="req" id="jabReq">wajib</span>
+                </div>
                 <input type="text" id="fJab" placeholder="Jabatan Anda…" />
               </div>
             </div>
@@ -248,6 +251,24 @@
       </div>
       <div class="footer">
         Pelayanan Statistik Terpadu · BPS Kab. Buton Utara · Buku Tamu Digital
+      </div>
+    </div>
+
+    <div
+      class="modal-bg"
+      id="resetModal"
+      onclick="if (event.target === this) closeResetModal();"
+    >
+      <div class="modal">
+        <h3>Reset Semua Input?</h3>
+        <p>
+          Semua data yang sudah Anda isi akan dihapus dan form akan kembali
+          kosong.
+        </p>
+        <div class="modal-acts">
+          <button class="btn-cancel" onclick="closeResetModal()">Batal</button>
+          <button class="btn-confirm" id="btnConfirmReset">Ya, Reset</button>
+        </div>
       </div>
     </div>
 

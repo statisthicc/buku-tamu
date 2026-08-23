@@ -586,14 +586,14 @@ function resetForm() {
   document.getElementById("fieldLainnya").classList.remove("show");
   document.getElementById("fJab").disabled = false;
   document.getElementById("fJab").placeholder = "Jabatan Anda…";
-  document.getElementById("jabReq").style.display = "inline-block";
+  // document.getElementById("jabReq").style.display = "inline-block";
   dismissSugg();
   closeDD();
   document.getElementById("fNama").focus();
 }
 
 function resetAllInputs() {
-  if (!confirm("Hapus semua isian?")) return;
+  // if (!confirm("Hapus semua isian?")) return;
   ["fNama", "fInst", "fJab", "fWa", "fEmail", "fLainnya"].forEach((id) => {
     const el = document.getElementById(id);
     el.value = "";
@@ -615,13 +615,26 @@ function resetAllInputs() {
     .classList.remove("filled", "err", "has-value");
   document.getElementById("fJab").disabled = false;
   document.getElementById("fJab").placeholder = "Jabatan Anda…";
-  document.getElementById("jabReq").style.display = "inline-block";
+  // document.getElementById("jabReq").style.display = "inline-block";
   dismissSugg();
   closeDD();
   closeDDInst();
 
   document.getElementById("fNama").focus();
 }
+
+function openResetModal() {
+  document.getElementById("resetModal").classList.add("open");
+}
+
+function closeResetModal() {
+  document.getElementById("resetModal").classList.remove("open");
+}
+
+document.getElementById("btnConfirmReset").addEventListener("click", () => {
+  resetAllInputs();
+  closeResetModal();
+});
 
 function shake(id) {
   shakeEl(document.getElementById(id));
