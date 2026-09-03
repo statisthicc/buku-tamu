@@ -738,6 +738,7 @@ document.querySelectorAll("input[name=kep]").forEach((cb) => {
 // Carousel
 let POSTER_LIST = [];
 let _posterIdx = 0;
+let _posterAutoTimer = null;
 
 async function initPosterCarousel() {
   try {
@@ -776,6 +777,61 @@ async function initPosterCarousel() {
   ).join("");
 
   updatePosterView();
+  startPosterAutoplay(); // start auto-advance once slides are ready
+}
+
+function updatePosterView() {
+  const track = document.getElementById("posterTrack");
+  track.style.transform = `translateX(-${_posterIdx * 100}%)`;
+
+  document.querySelectorAll(".poster-dot").forEach((d, i) => {
+    d.classList.toggle("active", i === _posterIdx);
+  });
+}
+
+function posterNext() {
+  _posterIdx = (_posterIdx + 1) % POSTER_LIST.length;
+  updatePosterView();
+  startPosterAutoplay(); // reset timer
+}
+
+function posterPrev() {
+  _posterIdx = (_posterIdx - 1 + POSTER_LIST.length) % POSTER_LIST.length;
+  updatePosterView();
+  startPosterAutoplay(); // reset timer
+}
+
+function posterGoTo(i) {
+  _posterIdx = i;
+  updatePosterView();
+  startPosterAutoplay(); // reset timer
+}
+
+function closePosterModal() {
+  document.getElementById("posterModal").classList.add("closed");
+  stopPosterAutoplay();
+}
+
+function startPosterAutoplay() {
+  stopPosterAutoplay(); // clear any existing timer first
+  if (POSTER_LIST.length <= 1) return; // no point looping a single image
+  _posterAutoTimer = setInterval(() => {
+    posterNext();
+  }, 5000);
+}
+
+function stopPosterAutoplay() {
+  clearInterval(_posterAutoTimer);
+  _posterAutoTimer = null;
+}
+
+function updatePosterView() {
+  const track = document.getElementById("posterTrack");
+  track.style.transform = `translateX(-${_posterIdx * 100}%)`;
+
+  document.querySelectorAll(".poster-dot").forEach((d, i) => {
+    d.classList.toggle("active", i === _posterIdx);
+  });
 }
 
 initDB().catch((e) => {

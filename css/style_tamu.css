@@ -249,7 +249,7 @@ body {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 960px;
+  max-width: 90vw;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -978,7 +978,7 @@ input.err {
   width: 35%;
   padding: 15px;
   margin: 28px auto 0;
-  background: linear-gradient(135deg, var(--navy), var(--navy2));
+  background: #173e76;
   color: #fff;
   border: none;
   border-radius: 14px;
@@ -995,8 +995,7 @@ input.err {
 }
 
 .btn-submit:hover {
-  transform: translateY(-2px);
-  /* box-shadow: 0 10px 28px rgba(58, 110, 165, 0.45); */
+  background: var(--navy);
 }
 
 .btn-submit:active {
@@ -1015,14 +1014,9 @@ input.err {
   align-items: center;
 }
 
-/* .arr {
-  font-size: 18px;
-  transition: 0.2s;
-} */
-
-.btn-submit:hover .arr {
+/* .btn-submit:hover .arr {
   transform: translateX(4px);
-}
+} */
 
 /* Success overlay */
 .suc {
