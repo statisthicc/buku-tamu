@@ -120,7 +120,11 @@ let _posterIdx = 0;
 let _posterTimer = null;
 
 async function initPosterLoop() {
-  await MediaManager.init();
+  try {
+    await MediaManager.init();
+  } catch (e) {
+    console.warn("MediaManager init failed:", e);
+  }
   const st = MediaManager.status();
 
   if (!st.active) {

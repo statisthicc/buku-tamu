@@ -735,8 +735,53 @@ document.querySelectorAll("input[name=kep]").forEach((cb) => {
   });
 });
 
+// Carousel
+let POSTER_LIST = [];
+let _posterIdx = 0;
+
+async function initPosterCarousel() {
+  try {
+    await CarouselMediaManager.init();
+  } catch (e) {
+    console.warn("CarouselMediaManager init failed:", e);
+  }
+  const st = CarouselMediaManager.status();
+
+  if (!st.active) {
+    console.warn(
+      "[Carousel] Folder assets/carousel/ belum dipilih dari Admin.",
+    );
+    document.getElementById("posterModal").classList.add("closed");
+    return;
+  }
+
+  const media = await CarouselMediaManager.listMedia();
+  POSTER_LIST = media.filter((m) => m.type === "image").map((m) => m.url);
+
+  if (!POSTER_LIST.length) {
+    console.warn("[Carousel] Tidak ada gambar di folder assets/carousel/.");
+    document.getElementById("posterModal").classList.add("closed");
+    return;
+  }
+
+  const track = document.getElementById("posterTrack");
+  const dots = document.getElementById("posterDots");
+
+  track.innerHTML = POSTER_LIST.map(
+    (src) => `<img src="${src}" alt="" />`,
+  ).join("");
+  dots.innerHTML = POSTER_LIST.map(
+    (_, i) =>
+      `<div class="poster-dot ${i === 0 ? "active" : ""}" onclick="posterGoTo(${i})"></div>`,
+  ).join("");
+
+  updatePosterView();
+}
+
 initDB().catch((e) => {
   clearInterval(_pt);
   sub.textContent = "❌ Gagal: " + e.message;
   console.error(e);
 });
+
+initPosterCarousel();

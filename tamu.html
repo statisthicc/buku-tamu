@@ -17,6 +17,47 @@
       <div class="boot-sub" id="bootSub">Memuat SQLite…</div>
     </div>
 
+    <div class="poster-modal" id="posterModal">
+      <div class="poster-backdrop"></div>
+      <div class="poster-content">
+        <div class="poster-carousel">
+          <button class="poster-nav poster-prev" onclick="posterPrev()">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path
+                d="M12.5 15L7.5 10L12.5 5"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+
+          <div class="poster-track-wrap">
+            <div class="poster-track" id="posterTrack"></div>
+          </div>
+
+          <button class="poster-nav poster-next" onclick="posterNext()">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path
+                d="M7.5 5L12.5 10L7.5 15"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div class="poster-dots" id="posterDots"></div>
+
+        <button class="poster-cta" onclick="closePosterModal()">
+          Isi Buku Tamu
+        </button>
+      </div>
+    </div>
+
     <div class="page">
       <div class="hero">
         <div class="hero-emblem">
@@ -274,6 +315,7 @@
 
     <script src="libs/sql-wasm.js"></script>
     <script src="js/db-manager.js"></script>
+    <script src="js/media-manager.js"></script>
     <script src="js/logic_tamu.js"></script>
   </body>
 </html>

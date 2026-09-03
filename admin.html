@@ -118,6 +118,35 @@
           </div>
         </div>
 
+        <!-- CAROUSEL FOLDER STATUS BAR -->
+        <div class="folder-bar inactive" id="carouselFolderBar">
+          <span class="fb-ico">🖼️</span>
+          <div class="fb-txt">
+            <b id="cfbTitle">Folder poster tamu belum dipilih</b>
+            <span id="cfbDesc"
+              >Pilih folder assets/carousel/ agar poster otomatis tampil di
+              halaman buku tamu.</span
+            >
+          </div>
+          <div class="fb-acts">
+            <button
+              class="fb-btn set"
+              id="cfbSetBtn"
+              onclick="setCarouselFolder()"
+            >
+              Pilih Folder assets/carousel/
+            </button>
+            <button
+              class="fb-btn clr"
+              id="cfbClrBtn"
+              onclick="unsetCarouselFolder()"
+              style="display: none"
+            >
+              ✕ Lepas
+            </button>
+          </div>
+        </div>
+
         <!-- DASHBOARD -->
         <div id="sec-dash">
           <div class="topbar">

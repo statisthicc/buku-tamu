@@ -1,7 +1,11 @@
 "use strict";
 
-const MediaManager = (() => {
-  const IDB = { NAME: "bukutamu_media_fsa", STORE: "handles", KEY: "dir" };
+function createMediaManager(storeKey) {
+  const IDB = {
+    NAME: `bukutamu_media_fsa_${storeKey}`,
+    STORE: "handles",
+    KEY: "dir",
+  };
 
   function openIdb() {
     return new Promise((ok, ng) => {
@@ -39,24 +43,35 @@ const MediaManager = (() => {
     });
   }
 
-  async function clearFolder() {
-    _dir = null;
-    await idbDel();
-  }
-
   const FSA = typeof showDirectoryPicker === "function";
   let _dir = null;
 
   const IMG_EXT = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
   const VID_EXT = [".mp4", ".webm"];
 
+  // async function init() {
+  //   if (!FSA) return;
+  //   try {
+  //     const h = await idbGet();
+  //     if (h && (await _permit(h))) _dir = h;
+  //   } catch (e) {
+  //     console.warn(`[MediaManager:${storeKey}] init:`, e);
+  //   }
+  // }
+
   async function init() {
     if (!FSA) return;
     try {
       const h = await idbGet();
-      if (h && (await _permit(h))) _dir = h;
+      if (h) {
+        const opts = { mode: "read" }; // or "readwrite" for db-manager
+        const perm = await h.queryPermission(opts);
+        if (perm === "granted") {
+          _dir = h;
+        }
+      }
     } catch (e) {
-      console.warn("[MediaManager] init:", e);
+      console.warn("[Manager] init:", e);
     }
   }
 
@@ -71,7 +86,7 @@ const MediaManager = (() => {
     }
     try {
       const h = await showDirectoryPicker({
-        id: "bukutamu-media",
+        id: `bukutamu-${storeKey}`,
         mode: "read",
       });
       _dir = h;
@@ -79,9 +94,14 @@ const MediaManager = (() => {
       return true;
     } catch (e) {
       if (e.name !== "AbortError")
-        console.error("[MediaManager] selectFolder:", e);
+        console.error(`[MediaManager:${storeKey}] selectFolder:`, e);
       return false;
     }
+  }
+
+  async function clearFolder() {
+    _dir = null;
+    await idbDel();
   }
 
   async function _permit(handle) {
@@ -109,10 +129,14 @@ const MediaManager = (() => {
         }
       }
     } catch (e) {
-      console.warn("[MediaManager] listMedia:", e);
+      console.warn(`[MediaManager:${storeKey}] listMedia:`, e);
     }
     return out.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   return { init, status, selectFolder, clearFolder, listMedia };
-})();
+}
+
+// Two independent instances, each with their own stored folder handle
+const MediaManager = createMediaManager("display");
+const CarouselMediaManager = createMediaManager("carousel");
