@@ -4,13 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin — Buku Tamu PST BPS Kab. Buton Utara</title>
-    <meta
-      name="description"
-      content="Panel admin buku tamu digital Pelayanan Statistik Terpadu BPS Kabupaten Buton Utara."
-    />
+    <meta name="description" content="Panel admin buku tamu digital Pelayanan Statistik Terpadu BPS Kabupaten Buton Utara." />
     <link rel="stylesheet" href="css/style_admin.css" />
   </head>
   <body>
+    <!-- Ikon (sprite) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+        <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+        <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></symbol>
+        <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+        <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+        <symbol id="i-down" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+        <symbol id="i-chev" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+        <symbol id="i-book" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+        <symbol id="i-refresh" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></symbol>
+        <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></symbol>
+        <symbol id="i-link" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></symbol>
+      </defs>
+    </svg>
+
+    <!-- BOOT -->
     <div id="boot">
       <div class="b-logo">Buku <span>Tamu</span> Admin</div>
       <div class="b-bar"><div class="b-fill" id="bootFill"></div></div>
@@ -18,136 +35,96 @@
     </div>
 
     <div class="layout">
+      <!-- ============ SIDEBAR ============ -->
       <aside>
         <div class="ah">
           <div class="brand">
-            <div class="brand-ico">📋</div>
-            <div class="brand-name">Buku Tamu<br />Digital</div>
-          </div>
-          <div class="brand-sub">Panel Administrator</div>
-          <div class="brand-badge">
-            <span class="dot"></span><span>SQLite — Offline</span>
+            <div class="brand-ico"><svg class="i"><use href="#i-book" /></svg></div>
+            <div class="brand-name">Tamu Kita<span>.</span></div>
           </div>
         </div>
+
         <nav>
-          <div class="nl">Menu</div>
+          <!-- 3 tombol pertama jangan diubah urutannya (showSec & .ni[2]) -->
+          <div class="nl">Workspace</div>
           <button class="ni on" onclick="showSec('dash', this)">
-            <span class="ico">📊</span><span>Dashboard</span>
+            <span class="ico"><svg class="i"><use href="#i-grid" /></svg></span><span>Dashboard</span>
           </button>
           <button class="ni" onclick="showSec('antrian', this)">
-            <span class="ico">🎫</span><span>Antrian Hari Ini</span
-            ><span class="nb nb-antrian" id="navAntrian">0</span>
+            <span class="ico"><svg class="i"><use href="#i-clock" /></svg></span><span>Antrian tamu</span><span class="nb nb-antrian" id="navAntrian">0</span>
           </button>
           <button class="ni" onclick="showSec('tamu', this)">
-            <span class="ico">👥</span><span>Data Tamu</span
-            ><span class="nb" id="navCnt">0</span>
-          </button>
-          <div class="nl">Database</div>
-          <button class="ni" onclick="doSave()">
-            <span class="ico">💾</span><span>Simpan .db</span>
-          </button>
-          <button class="ni" onclick="doLoad()">
-            <span class="ico">📂</span><span>Buka .db</span>
+            <span class="ico"><svg class="i"><use href="#i-users" /></svg></span><span>Data tamu</span><span class="nb" id="navCnt">0</span>
           </button>
           <button class="ni" onclick="exportCSV()">
-            <span class="ico">⬇</span><span>Export CSV</span>
-          </button>
-          <button class="ni" onclick="clearAll()">
-            <span class="ico">🗑</span><span>Hapus Semua</span>
+            <span class="ico"><svg class="i"><use href="#i-file" /></svg></span><span>Laporan (CSV)</span>
           </button>
         </nav>
+
+        <!-- Kartu info: selalu menempel di dasar sidebar -->
         <div class="af">
-          <a class="guest-btn" href="tamu.html" target="_blank"
-            ><span>🔗</span><span>Halaman Tamu</span></a
-          >
+          <div class="side-card">
+            <b>Semua tamu, tercatat.</b>
+            <span>Terima kasih telah hadir dan menjadi bagian dari cerita berharga hari ini</span>
+            <a class="side-link" href="tamu.html" target="_blank">Halaman tamu <svg class="i"><use href="#i-chev" /></svg></a>
+          </div>
         </div>
       </aside>
 
+      <!-- ============ MAIN ============ -->
       <main class="main">
-        <!-- FOLDER STATUS BAR -->
-        <div class="folder-bar inactive" id="folderBar">
-          <span class="fb-ico">📁</span>
-          <div class="fb-txt">
-            <b id="fbTitle">Folder penyimpanan belum dipilih</b>
-            <span id="fbDesc"
-              >Pilih folder db/ agar file .db tersimpan otomatis di sana setiap
-              kali disimpan.</span
-            >
+        <header class="app-header">
+          <div class="crumb"><span>Workspace</span><svg class="i"><use href="#i-chev" /></svg><b>Dashboard</b></div>
+          <div class="app-header-r">
+            <span class="status-pill"><i class="dot"></i>Resepsionis aktif</span>
+            <svg class="i bell"><use href="#i-bell" /></svg>
+            <div class="user">
+              <div class="user-txt"><b>Admin</b><span>Resepsionis</span></div>
+              <div class="avatar">A</div>
+            </div>
           </div>
-          <div class="fb-acts">
-            <button class="fb-btn set" id="fbSetBtn" onclick="setFolder()">
-              Pilih Folder db/
-            </button>
-            <button
-              class="fb-btn clr"
-              id="fbClrBtn"
-              onclick="unsetFolder()"
-              style="display: none"
-            >
-              ✕ Lepas
-            </button>
-          </div>
-        </div>
+        </header>
 
-        <!-- MEDIA FOLDER STATUS BAR -->
-        <div class="folder-bar inactive" id="mediaFolderBar">
-          <span class="fb-ico">🖼️</span>
-          <div class="fb-txt">
-            <b id="mfbTitle">Folder media display belum dipilih</b>
-            <span id="mfbDesc"
-              >Pilih folder assets/display/ agar poster/video otomatis tampil di
-              layar TV.</span
-            >
+        <!-- Panel pilih folder manual.
+             Tersembunyi saat folderMode = "config" (folder diatur di config.json).
+             Otomatis tampil bila folderMode = "picker" atau server.js tidak berjalan. -->
+        <details class="folder-wrap" id="folderStubs" hidden open>
+          <summary>Pengaturan folder penyimpanan</summary>
+          <div class="folder-grid">
+            <div class="folder-bar inactive" id="folderBar">
+              <div class="fb-txt">
+                <b id="fbTitle">Folder penyimpanan belum dipilih</b>
+                <span id="fbDesc">Pilih folder db/ agar file .db tersimpan otomatis di sana setiap kali disimpan.</span>
+              </div>
+              <div class="fb-acts">
+                <button class="fb-btn set" id="fbSetBtn" onclick="setFolder()">Pilih Folder db/</button>
+                <button class="fb-btn clr" id="fbClrBtn" onclick="unsetFolder()" style="display: none">✕ Lepas</button>
+              </div>
+            </div>
+            <div class="folder-bar inactive" id="mediaFolderBar">
+              <div class="fb-txt">
+                <b id="mfbTitle">Folder media display belum dipilih</b>
+                <span id="mfbDesc">Pilih folder assets/display/ agar poster/video otomatis tampil di layar TV.</span>
+              </div>
+              <div class="fb-acts">
+                <button class="fb-btn set" id="mfbSetBtn" onclick="setMediaFolder()">Pilih Folder assets/display/</button>
+                <button class="fb-btn clr" id="mfbClrBtn" onclick="unsetMediaFolder()" style="display: none">✕ Lepas</button>
+              </div>
+            </div>
+            <div class="folder-bar inactive" id="carouselFolderBar">
+              <div class="fb-txt">
+                <b id="cfbTitle">Folder poster tamu belum dipilih</b>
+                <span id="cfbDesc">Pilih folder assets/carousel/ agar poster otomatis tampil di halaman buku tamu.</span>
+              </div>
+              <div class="fb-acts">
+                <button class="fb-btn set" id="cfbSetBtn" onclick="setCarouselFolder()">Pilih Folder assets/carousel/</button>
+                <button class="fb-btn clr" id="cfbClrBtn" onclick="unsetCarouselFolder()" style="display: none">✕ Lepas</button>
+              </div>
+            </div>
           </div>
-          <div class="fb-acts">
-            <button
-              class="fb-btn set"
-              id="mfbSetBtn"
-              onclick="setMediaFolder()"
-            >
-              Pilih Folder assets/display/
-            </button>
-            <button
-              class="fb-btn clr"
-              id="mfbClrBtn"
-              onclick="unsetMediaFolder()"
-              style="display: none"
-            >
-              ✕ Lepas
-            </button>
-          </div>
-        </div>
+        </details>
 
-        <!-- CAROUSEL FOLDER STATUS BAR -->
-        <div class="folder-bar inactive" id="carouselFolderBar">
-          <span class="fb-ico">🖼️</span>
-          <div class="fb-txt">
-            <b id="cfbTitle">Folder poster tamu belum dipilih</b>
-            <span id="cfbDesc"
-              >Pilih folder assets/carousel/ agar poster otomatis tampil di
-              halaman buku tamu.</span
-            >
-          </div>
-          <div class="fb-acts">
-            <button
-              class="fb-btn set"
-              id="cfbSetBtn"
-              onclick="setCarouselFolder()"
-            >
-              Pilih Folder assets/carousel/
-            </button>
-            <button
-              class="fb-btn clr"
-              id="cfbClrBtn"
-              onclick="unsetCarouselFolder()"
-              style="display: none"
-            >
-              ✕ Lepas
-            </button>
-          </div>
-        </div>
-
-        <!-- DASHBOARD -->
+        <!-- ============ DASHBOARD ============ -->
         <div id="sec-dash">
           <div class="topbar">
             <div>
@@ -155,183 +132,825 @@
               <div class="page-sub" id="dashSub">—</div>
             </div>
             <div class="acts">
-              <button class="btn btn-s" onclick="refresh()">🔄 Refresh</button>
-              <button class="btn btn-s" onclick="doSave()">
-                💾 Simpan .db
-              </button>
-              <button class="btn btn-p" onclick="exportCSV()">
-                ⬇ Export CSV
-              </button>
+              <span class="date-chip" id="clockChip"><svg class="i"><use href="#i-cal" /></svg><span id="todayChip">—</span></span>
+              <button class="btn btn-s" onclick="refresh()"><svg class="i"><use href="#i-refresh" /></svg>Refresh</button>
+              <!-- Membuka form di popup, halaman admin tidak dimuat ulang -->
+              <button class="btn btn-p" type="button" onclick="openAddGuest()"><svg class="i"><use href="#i-plus" /></svg>Tambah tamu</button>
             </div>
           </div>
+
           <div class="stats" id="statsRow"></div>
+
+          <div class="grid-2">
+            <!-- Antrian tamu -->
+            <section class="panel">
+              <div class="panel-h">
+                <div>
+                  <div class="panel-t">Antrian tamu</div>
+                  <div class="panel-s">Nomor antrian hari ini (sama dengan layar display).</div>
+                </div>
+                <button class="link-btn" onclick="showSec('antrian', document.querySelectorAll('.ni')[1])">Lihat semua <svg class="i"><use href="#i-link" /></svg></button>
+              </div>
+              <div class="queue">
+                <div class="call-card" id="callCard">
+                  <div class="call-l">Sedang dipanggil</div>
+                  <div class="call-no">—</div>
+                  <div class="call-n">Memuat antrian…</div>
+                </div>
+                <div class="queue-next">
+                  <div class="mini-l">Berikutnya</div>
+                  <div id="queueList"></div>
+                  <div class="queue-more" id="queueMore"></div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Statistik kunjungan -->
+            <section class="panel">
+              <div class="panel-h">
+                <div>
+                  <div class="panel-t">Statistik kunjungan</div>
+                  <div class="panel-s">Distribusi kedatangan tamu hari ini.</div>
+                </div>
+                <span class="chip">Hari ini</span>
+              </div>
+              <div class="hchart" id="hourChart"></div>
+              <div class="visit" id="visitBox"></div>
+            </section>
+          </div>
+
           <div class="charts">
             <div class="chart-card">
-              <div class="ct">📊 Keperluan Terbanyak</div>
+              <div class="ct">Keperluan terbanyak</div>
               <div class="bars" id="chartKep"></div>
             </div>
             <div class="chart-card">
-              <div class="ct">🏢 Instansi Terbanyak</div>
+              <div class="ct">Instansi terbanyak</div>
               <div class="bars" id="chartInst"></div>
             </div>
           </div>
-          <div class="tbl-head">
-            <div><div class="sec-title">5 Kunjungan Terbaru</div></div>
-            <button
-              class="btn btn-s"
-              onclick="showSec('tamu', document.querySelectorAll('.ni')[2])"
-            >
-              Lihat Semua →
-            </button>
-          </div>
-          <div class="tbl-card">
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Antrian</th>
-                  <th>Nama &amp; Instansi</th>
-                  <th>Keperluan</th>
-                  <th>No. WA</th>
-                  <th>Waktu</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="recentBody"></tbody>
-            </table>
-            <div class="empty" id="recentEmpty" style="display: none">
-              <div class="ei">📭</div>
-              <p>Belum ada data.</p>
+
+          <section class="panel panel-table">
+            <div class="panel-h">
+              <div>
+                <div class="panel-t">Kunjungan terbaru <span class="count-pill" id="countPill">0 tamu</span></div>
+                <div class="panel-s">5 kunjungan terakhir yang tercatat di buku tamu.</div>
+              </div>
+              <div class="tbl-tools">
+                <input class="srch" id="recentSrch" type="text" placeholder="Cari nama tamu…" />
+                <button class="btn btn-s" onclick="exportCSV()"><svg class="i"><use href="#i-down" /></svg>Ekspor data</button>
+                <button class="btn btn-s" onclick="showSec('tamu', document.querySelectorAll('.ni')[2])">Lihat semua</button>
+              </div>
             </div>
-          </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr><th>#</th><th>Antrian</th><th>Nama &amp; Instansi</th><th>Keperluan</th><th>No. WA</th><th>Waktu</th><th>Status</th></tr>
+                </thead>
+                <tbody id="recentBody"></tbody>
+              </table>
+              <div class="empty" id="recentEmpty" style="display: none">
+                <div class="ei">📭</div><p>Belum ada data.</p>
+              </div>
+            </div>
+          </section>
         </div>
 
-        <!-- ANTRIAN HARI INI -->
+        <!-- ============ ANTRIAN ============ -->
         <div id="sec-antrian" style="display: none">
           <div class="topbar">
             <div>
-              <div class="page-title">🎫 Antrian Hari Ini</div>
+              <div class="page-title">Antrian tamu</div>
               <div class="page-sub" id="antrianSub">—</div>
             </div>
             <div class="acts">
-              <button class="btn btn-s" onclick="refresh()">🔄 Refresh</button>
+              <button class="btn btn-s" onclick="refresh()"><svg class="i"><use href="#i-refresh" /></svg>Refresh</button>
             </div>
           </div>
           <div class="antrian-stats" id="antrianStats"></div>
-          <div class="tbl-card">
-            <table>
-              <thead>
-                <tr>
-                  <th>No. Antrian</th>
-                  <th>Nama</th>
-                  <th>Keperluan</th>
-                  <th>Waktu Daftar</th>
-                  <th>Status Pelayanan</th>
-                </tr>
-              </thead>
-              <tbody id="antrianBody"></tbody>
-            </table>
-            <div class="empty" id="antrianEmpty" style="display: none">
-              <div class="ei">🎫</div>
-              <p>Belum ada antrian hari ini.</p>
+          <section class="panel panel-table">
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr><th>No. Antrian</th><th>Nama</th><th>Keperluan</th><th>Waktu Daftar</th><th>Status Pelayanan</th></tr>
+                </thead>
+                <tbody id="antrianBody"></tbody>
+              </table>
+              <div class="empty" id="antrianEmpty" style="display: none">
+                <div class="ei">🎫</div><p>Belum ada antrian hari ini.</p>
+              </div>
             </div>
-          </div>
+          </section>
         </div>
 
-        <!-- DATA TAMU -->
+        <!-- ============ DATA TAMU ============ -->
         <div id="sec-tamu" style="display: none">
           <div class="topbar">
             <div>
-              <div class="page-title">Data Tamu</div>
+              <div class="page-title">Data tamu</div>
               <div class="page-sub" id="tamuSub">—</div>
             </div>
             <div class="acts">
-              <button class="btn btn-s" onclick="doLoad()">📂 Buka .db</button>
-              <button class="btn btn-s" onclick="doSave()">
-                💾 Simpan .db
-              </button>
-              <button class="btn btn-d" onclick="exportCSV()">⬇ CSV</button>
+              <button class="btn btn-s" onclick="doLoad()">Buka .db</button>
+              <button class="btn btn-s" onclick="doSave()">Simpan .db</button>
+              <button class="btn btn-s" onclick="exportCSV()"><svg class="i"><use href="#i-down" /></svg>Ekspor data</button>
+              <button class="btn btn-s btn-danger" onclick="clearAll()">Hapus semua</button>
             </div>
           </div>
-          <div class="tbl-head" style="margin-top: 0">
-            <div></div>
-            <input
-              class="srch"
-              id="srch"
-              type="text"
-              placeholder="Cari nama, instansi…"
-              oninput="onSearch(this.value)"
-            />
-          </div>
-          <div class="tbl-card">
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Antrian</th>
-                  <th>Nama &amp; Instansi</th>
-                  <th>Jabatan</th>
-                  <th>Keperluan</th>
-                  <th>No. WA</th>
-                  <th>Waktu</th>
-                  <th>Status</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="tamuBody"></tbody>
-            </table>
-            <div class="empty" id="tamuEmpty" style="display: none">
-              <div class="ei">📭</div>
-              <p>Belum ada data tamu.</p>
+          <section class="panel panel-table">
+            <div class="panel-h">
+              <div class="panel-t">Semua tamu</div>
+              <input class="srch" id="srch" type="text" placeholder="Cari nama, instansi…" oninput="onSearch(this.value)" />
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr><th>#</th><th>Antrian</th><th>Nama &amp; Instansi</th><th>Jabatan</th><th>Keperluan</th><th>No. WA</th><th>Waktu</th><th>Status</th><th></th></tr>
+                </thead>
+                <tbody id="tamuBody"></tbody>
+              </table>
+              <div class="empty" id="tamuEmpty" style="display: none">
+                <div class="ei">📭</div><p>Belum ada data tamu.</p>
+              </div>
             </div>
             <div class="pager" id="pager"></div>
-          </div>
+          </section>
         </div>
       </main>
     </div>
 
-    <!-- Delete modal -->
-    <div
-      class="modal-bg"
-      id="delModal"
-      onclick="if (event.target === this) closeMdl();"
-    >
+    <!-- MODAL HAPUS -->
+    <div class="modal-bg" id="delModal" onclick="if (event.target === this) closeMdl();">
       <div class="modal">
-        <h3>🗑 Hapus Data?</h3>
+        <h3>Hapus data?</h3>
         <p>Data tamu ini akan dihapus secara permanen dari database.</p>
         <div class="modal-acts">
-          <button class="btn-cancel" onclick="closeMdl()">Batal</button
-          ><button class="btn-del" id="btnDel">Hapus</button>
+          <button class="btn-cancel" onclick="closeMdl()">Batal</button>
+          <button class="btn-del" id="btnDel">Hapus</button>
         </div>
       </div>
     </div>
-
-    <!-- Clear all modal -->
-    <div
-      class="modal-bg"
-      id="clearModal"
-      onclick="if (event.target === this) closeMdl2();"
-    >
+    <div class="modal-bg" id="clearModal" onclick="if (event.target === this) closeMdl2();">
       <div class="modal">
-        <h3>⚠️ Hapus Semua Data?</h3>
-        <p>
-          Seluruh data akan dihapus permanen. Pastikan sudah simpan .db atau
-          export CSV terlebih dahulu.
-        </p>
+        <h3>Hapus semua data?</h3>
+        <p>Seluruh data akan dihapus permanen. Pastikan sudah simpan .db atau export CSV terlebih dahulu.</p>
         <div class="modal-acts">
-          <button class="btn-cancel" onclick="closeMdl2()">Batal</button
-          ><button class="btn-del" id="btnClear">Hapus Semua</button>
+          <button class="btn-cancel" onclick="closeMdl2()">Batal</button>
+          <button class="btn-del" id="btnClear">Hapus semua</button>
         </div>
       </div>
     </div>
 
-    <div class="toast" id="toast">
-      <span id="tIco"></span><span id="tMsg"></span>
+    <!-- MODAL TAMBAH TAMU (form tamu.html dalam popup, tanpa memuat ulang halaman admin) -->
+    <div class="modal-bg" id="addModal">
+      <div class="add-box" role="dialog" aria-modal="true" aria-label="Tambah tamu">
+        <div class="add-h">
+          <b>Tambah tamu</b>
+          <button type="button" class="add-x" onclick="closeAddGuest()" aria-label="Tutup">✕</button>
+        </div>
+        <iframe id="addFrame" title="Form tambah tamu"></iframe>
+      </div>
     </div>
+
+    <div class="toast" id="toast"><span id="tIco"></span><span id="tMsg"></span></div>
 
     <script src="libs/sql-wasm.js"></script>
     <script src="js/db-manager.js"></script>
     <script src="js/media-manager.js"></script>
     <script src="js/logic_admin.js"></script>
+
+    <!-- ============ TAMBAH TAMU TANPA MEMUAT ULANG HALAMAN ============ -->
+    <script>
+      (function () {
+        "use strict";
+        var poll = null;
+        var modal = document.getElementById("addModal");
+        var frame = document.getElementById("addFrame");
+
+        function reload() {
+          if (typeof refresh === "function") { try { refresh(); } catch (e) {} }
+        }
+
+        window.openAddGuest = function () {
+          frame.src = "tamu.html";            /* form selalu segar */
+          modal.classList.add("open");
+          clearInterval(poll);
+          poll = setInterval(reload, 3000);   /* tamu baru langsung muncul di dashboard */
+        };
+
+        window.closeAddGuest = function () {
+          modal.classList.remove("open");
+          frame.src = "about:blank";
+          clearInterval(poll);
+          reload();
+        };
+
+        modal.addEventListener("click", function (e) {
+          if (e.target === modal) closeAddGuest();
+        });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && modal.classList.contains("open")) closeAddGuest();
+        });
+      })();
+    </script>
+
+    <!-- ============ JAM BERJALAN (format sama dengan CSV/Excel: dd/mm/yyyy HH:MM:SS) ============ -->
+    <script>
+      (function () {
+        "use strict";
+        var chip = document.getElementById("todayChip");
+        if (!chip) return;
+        function p(n) { return String(n).padStart(2, "0"); }
+        function tick() {
+          var d = new Date();
+          chip.textContent =
+            p(d.getDate()) + "/" + p(d.getMonth() + 1) + "/" + d.getFullYear() + " " +
+            p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
+        }
+        tick();
+        setInterval(tick, 1000);
+      })();
+    </script>
+
+    <!-- ============ TAMBAHAN UI (inline, hanya MEMBACA DOM) ============ -->
+    <script>
+      (function () {
+        "use strict";
+        var $ = function (id) { return document.getElementById(id); };
+        var esc = function (s) {
+          return String(s).replace(/[&<>"']/g, function (c) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+          });
+        };
+        var SHOW_NEXT = 3; /* jumlah "berikutnya": SAMA dengan layar display */
+
+        /* Baca baris antrian dari #antrianBody (hasil render logic_admin.js) */
+        function readQueue() {
+          var body = $("antrianBody");
+          if (!body) return [];
+          return Array.prototype.slice.call(body.querySelectorAll("tr")).map(function (tr) {
+            var td = tr.children;
+            if (td.length < 4) return null;
+            return {
+              no: td[0].textContent.trim(),
+              nama: td[1].textContent.trim(),
+              kep: td[2].textContent.trim(),
+              waktu: td[3].textContent.trim(),
+              done: tr.classList.contains("row-done") || !!tr.querySelector(".toggle-input:checked"),
+            };
+          }).filter(Boolean);
+        }
+
+        /* ---------- Satu sumber data antrian untuk dashboard DAN display ---------- */
+        var QKEY = "bt_queue";
+        var qChannel = "BroadcastChannel" in window ? new BroadcastChannel(QKEY) : null;
+        var lastJson = "";
+        var lastState = null;
+
+        function todayKey() {
+          var d = new Date();
+          return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+        }
+
+        function buildState(list) {
+          var waiting = list.filter(function (q) { return !q.done; });
+          return {
+            date: todayKey(),
+            serving: waiting.length ? waiting[0].no : null,
+            next: waiting.slice(1, 1 + SHOW_NEXT).map(function (q) { return q.no; }),
+            left: Math.max(0, waiting.length - 1 - SHOW_NEXT) /* sisa di luar yang ditampilkan */
+          };
+        }
+
+        function send(state, force) {
+          var json = JSON.stringify(state);
+          if (!force && json === lastJson) return;
+          lastJson = json;
+          try { localStorage.setItem(QKEY, json); } catch (e) {}
+          if (qChannel) qChannel.postMessage(state);
+        }
+
+        /* Display meminta data terbaru (mis. baru dibuka/di-refresh) → kirim ulang */
+        if (qChannel) {
+          qChannel.addEventListener("message", function (e) {
+            if (e.data && e.data.request && lastState) send(lastState, true);
+          });
+        }
+        /* Kirim ulang berkala sebagai cadangan agar display tidak pernah tertinggal */
+        setInterval(function () { if (lastState) send(lastState, true); }, 3000);
+
+        /* ---------- Dashboard: tampilkan HANYA nomor antrian ---------- */
+        function renderQueue(state) {
+          var call = $("callCard"), next = $("queueList"), more = $("queueMore");
+
+          if (!state.serving) {
+            call.innerHTML = '<div class="call-l">Sedang dipanggil</div><div class="call-no">—</div><div class="call-n">Belum ada antrean</div>';
+            next.innerHTML = '<div class="queue-empty">Belum ada tamu menunggu.</div>';
+            more.textContent = "";
+            return;
+          }
+          call.innerHTML =
+            '<div class="call-l">Sedang dipanggil</div>' +
+            '<div class="call-no">' + esc(state.serving) + "</div>";
+
+          next.innerHTML = state.next.length
+            ? state.next.map(function (no, i) {
+                return '<div class="qrow"><span class="qno">' + esc(no) + '</span><div class="qtxt"><b>' +
+                  (i === 0 ? "Bersiap" : "Menunggu") + "</b></div></div>";
+              }).join("")
+            : '<div class="queue-empty">Tidak ada antrian berikutnya.</div>';
+          more.textContent = state.left > 0 ? "+" + state.left + " nomor lainnya dalam antrean" : "";
+        }
+
+        /* Grafik batang per jam dari "Waktu Daftar" (disembunyikan, diganti diagram di bawah) */
+        function renderHours(list) {
+          var h0 = 8, h1 = 16, counts = {}, h;
+          for (h = h0; h <= h1; h++) counts[h] = 0;
+          list.forEach(function (q) {
+            var m = q.waktu.match(/(\d{1,2})[:.](\d{2})/);
+            if (!m) return;
+            var hr = Math.min(h1, Math.max(h0, parseInt(m[1], 10)));
+            counts[hr]++;
+          });
+          var max = 0;
+          for (h = h0; h <= h1; h++) if (counts[h] > max) max = counts[h];
+          var top = Math.max(4, Math.ceil(max / 4) * 4);
+          var peak = null;
+          if (max > 0) for (h = h0; h <= h1; h++) if (counts[h] === max) { peak = h; break; }
+
+          var html = '<div class="hy">' +
+            [top, (top * 2) / 3, top / 3, 0].map(function (t) { return "<span>" + Math.round(t) + "</span>"; }).join("") +
+            '</div><div class="hbars">';
+          for (h = h0; h <= h1; h++) {
+            var pct = (counts[h] / top) * 100;
+            html += '<div class="hcol"><div class="hbar-wrap"><div class="hbar' + (h === peak ? " peak" : "") +
+              '" style="height:' + Math.max(pct, counts[h] ? 6 : 3) + '%">' +
+              (h === peak ? '<span class="hval">' + counts[h] + "</span>" : "") +
+              '</div></div><span class="hx">' + String(h).padStart(2, "0") + ":00</span></div>";
+          }
+          $("hourChart").innerHTML = html + "</div>";
+        }
+
+        function renderCount() {
+          $("countPill").textContent = $("navCnt").textContent.trim() + " tamu";
+        }
+
+        /* Pencarian cepat di tabel kunjungan terbaru */
+        $("recentSrch").addEventListener("input", function (e) {
+          var q = e.target.value.toLowerCase();
+          Array.prototype.forEach.call($("recentBody").querySelectorAll("tr"), function (tr) {
+            tr.style.display = tr.textContent.toLowerCase().indexOf(q) > -1 ? "" : "none";
+          });
+        });
+
+        var timer;
+        function renderAll() {
+          clearTimeout(timer);
+          timer = setTimeout(function () {
+            try {
+              var list = readQueue();
+              var state = buildState(list);   /* satu state → dipakai dashboard & display */
+              lastState = state;
+              renderQueue(state);
+              send(state, false);
+              renderHours(list);
+              renderCount();
+            } catch (err) { console.warn("UI tambahan:", err); }
+          }, 60);
+        }
+
+        ["antrianBody", "navCnt", "navAntrian"].forEach(function (id) {
+          new MutationObserver(renderAll).observe($(id), { childList: true, subtree: true, characterData: true });
+        });
+        renderAll();
+        window.addEventListener("load", function () { setTimeout(renderAll, 800); setTimeout(renderAll, 2500); });
+      })();
+    </script>
+
+    <!-- ============ DAFTAR TAMU DI STATISTIK KUNJUNGAN (hanya MEMBACA DOM; gaya ada di style_admin.css) ============ -->
+    <script>
+      (function () {
+        "use strict";
+        var $ = function (id) { return document.getElementById(id); };
+        var esc = function (s) {
+          return String(s).replace(/[&<>"']/g, function (c) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+          });
+        };
+        var box = $("visitBox"), chart = $("hourChart"), sel = null, t;
+        if (!box || !chart) return;
+
+        function readGuests() {
+          var body = $("antrianBody");
+          if (!body) return [];
+          return Array.prototype.slice.call(body.querySelectorAll("tr")).map(function (tr) {
+            var td = tr.children;
+            if (td.length < 4) return null;
+            return {
+              no: td[0].textContent.trim(),
+              nama: td[1].textContent.trim(),
+              kep: td[2].textContent.trim(),
+              waktu: td[3].textContent.trim(),
+              done: tr.classList.contains("row-done") || !!tr.querySelector(".toggle-input:checked"),
+            };
+          }).filter(Boolean);
+        }
+
+        /* Jam kedatangan (dibatasi 08–16, sama seperti grafik) */
+        function hourOf(q) {
+          var m = q.waktu.match(/(\d{1,2})[:.](\d{2})/);
+          if (!m) return null;
+          return Math.min(16, Math.max(8, parseInt(m[1], 10)));
+        }
+
+        function render() {
+          var all = readGuests();
+          var shown = sel === null ? all : all.filter(function (q) { return hourOf(q) === sel; });
+
+          var head = '<div class="visit-h"><b>Tamu yang sudah daftar</b><span class="visit-cnt">' + shown.length + "</span>" +
+            (sel === null
+              ? '<span class="visit-hint">Klik batang jam untuk memfilter</span>'
+              : '<button class="visit-clear" type="button" id="visitClear">Jam ' + String(sel).padStart(2, "0") + ":00 · Tampilkan semua ✕</button>") +
+            "</div>";
+
+          var body = shown.length
+            ? '<div class="visit-list">' + shown.map(function (q) {
+                var ini = (q.nama.trim().charAt(0) || "?").toUpperCase();
+                return '<div class="vrow"><div class="vav">' + esc(ini) + '</div><div class="vtx"><b>' + esc(q.nama) +
+                  "</b><span>" + esc(q.kep) + " · " + esc(q.waktu) + '</span></div><span class="vno">' + esc(q.no) +
+                  '</span><span class="vst' + (q.done ? " done" : "") + '">' + (q.done ? "Dilayani" : "Menunggu") + "</span></div>";
+              }).join("") + "</div>"
+            : '<div class="visit-empty">' + (sel === null ? "Belum ada tamu yang mendaftar." : "Tidak ada tamu pada jam ini.") + "</div>";
+
+          box.innerHTML = head + body;
+
+          Array.prototype.forEach.call(chart.querySelectorAll(".hcol"), function (col) {
+            var hx = col.querySelector(".hx");
+            col.classList.toggle("sel", !!hx && sel !== null && parseInt(hx.textContent, 10) === sel);
+          });
+        }
+
+        function pickHour(h) { sel = sel === h ? null : h; render(); }
+
+        /* Klik batang jam (grafik lama yang disembunyikan) → filter daftar */
+        chart.addEventListener("click", function (e) {
+          var col = e.target.closest ? e.target.closest(".hcol") : null;
+          if (!col) return;
+          var hx = col.querySelector(".hx");
+          if (hx) pickHour(parseInt(hx.textContent, 10));
+        });
+        /* Klik batang pada diagram baru (.vc-col) → filter daftar yang sama */
+        document.addEventListener("click", function (e) {
+          var col = e.target.closest ? e.target.closest(".vc-col") : null;
+          if (!col) return;
+          pickHour(parseInt(col.getAttribute("data-h"), 10));
+        });
+        box.addEventListener("click", function (e) {
+          if (e.target && e.target.id === "visitClear") { sel = null; render(); }
+        });
+
+        new MutationObserver(function () {
+          clearTimeout(t);
+          t = setTimeout(render, 80);
+        }).observe(chart, { childList: true });
+
+        render();
+        window.addEventListener("load", function () { setTimeout(render, 900); setTimeout(render, 2600); });
+      })();
+    </script>
+
+    <!-- ============ DIAGRAM BATANG WAKTU KUNJUNGAN (hanya membaca DOM) ============ -->
+    <script>
+      (function () {
+        "use strict";
+        var host = document.getElementById("hourChart");
+        if (!host) return;
+        var H0 = 8, H1 = 16;   /* rentang jam: 08:00 – 16:59 */
+        var HEIGHT = 230;      /* tinggi area batang (px) */
+        function pad(n) { return String(n).padStart(2, "0"); }
+        function range(h) { return pad(h) + ":00–" + pad(h) + ":59"; }
+
+        var st = document.createElement("style");
+        st.textContent = [
+          "#hourChart{display:none !important}",
+          ".vc{font-family:inherit}",
+          ".vc-wrap{display:grid;grid-template-columns:34px 1fr;column-gap:10px}",
+          ".vc-y{position:relative;height:" + HEIGHT + "px}",
+          ".vc-y span{position:absolute;right:0;transform:translateY(50%);font-size:12px;font-weight:600;color:#8a97a8}",
+          ".vc-area{position:relative;height:" + HEIGHT + "px}",
+          ".vc-line{position:absolute;left:0;right:0;border-top:1px dashed #d9e1ec}",
+          ".vc-line.base{border-top:1px solid #c3d0e0}",
+          ".vc-bars{position:absolute;inset:0;display:flex;align-items:flex-end}",
+          ".vc-col{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;cursor:pointer}",
+          ".vc-bar{position:relative;width:58%;max-width:46px;min-height:4px;border-radius:9px 9px 3px 3px;background:linear-gradient(180deg,#1a7ad9 0%,#0b2f5e 100%);transition:height .5s ease,filter .15s}",
+          ".vc-bar.zero{background:#d9e1ec}",
+          ".vc-bar.peak{background:linear-gradient(180deg,#f7ad4d 0%,#f5941f 100%);box-shadow:0 6px 14px rgba(245,148,31,.35)}",
+          ".vc-col:hover .vc-bar{filter:brightness(1.12)}",
+          ".vc-val{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:13px;font-weight:700;color:#0b2f5e}",
+          ".vc-bar.peak .vc-val{color:#d97a00}",
+          ".vc-bar.zero .vc-val{color:#a6b2c2;font-weight:600}",
+          ".vc-xs{display:flex;margin-top:8px}",
+          ".vc-xs span{flex:1;text-align:center;font-size:12px;font-weight:600;color:#6b7a8c}",
+          ".vc-xs span.now{color:#f5941f;font-weight:700}",
+          ".vc-sum{margin-top:12px;font-size:13px;font-weight:600;color:#6b7a8c}",
+          ".vc-sum b{color:#0b2f5e}",
+          ".vc-tip{position:fixed;z-index:9999;pointer-events:none;background:#0b2f5e;color:#fff;font-family:inherit;font-size:12px;font-weight:600;line-height:1.35;padding:8px 12px;border-radius:10px;box-shadow:0 8px 20px rgba(0,25,60,.3);opacity:0;transition:opacity .12s;transform:translate(-50%,-115%);white-space:nowrap}",
+          ".vc-tip.on{opacity:1}",
+          ".vc-tip b{display:block;font-size:14px;color:#f7ad4d}"
+        ].join("");
+        document.head.appendChild(st);
+
+        var box = document.createElement("div");
+        box.className = "vc";
+        host.insertAdjacentElement("afterend", box);
+        var tip = document.createElement("div");
+        tip.className = "vc-tip";
+        document.body.appendChild(tip);
+
+        /* Jumlah tamu per jam dari kolom "Waktu Daftar" di #antrianBody */
+        function counts() {
+          var c = {}, h;
+          for (h = H0; h <= H1; h++) c[h] = 0;
+          var body = document.getElementById("antrianBody");
+          if (!body) return c;
+          Array.prototype.forEach.call(body.querySelectorAll("tr"), function (tr) {
+            var td = tr.children;
+            if (td.length < 4) return;
+            var m = td[3].textContent.match(/(\d{1,2})[:.](\d{2})/);
+            if (!m) return;
+            c[Math.min(H1, Math.max(H0, parseInt(m[1], 10)))]++;
+          });
+          return c;
+        }
+
+        function render() {
+          var c = counts(), h, max = 0, total = 0, peak = null;
+          for (h = H0; h <= H1; h++) { total += c[h]; if (c[h] > max) { max = c[h]; peak = h; } }
+          var top = Math.max(4, Math.ceil(max / 4) * 4);
+          var nowH = new Date().getHours();
+
+          var y = "", lines = "", cols = "", xs = "", t;
+          for (t = 0; t <= 4; t++) {
+            var pct = (t / 4) * 100;
+            y += '<span style="bottom:' + pct + '%">' + Math.round((top * t) / 4) + "</span>";
+            lines += '<div class="vc-line' + (t === 0 ? " base" : "") + '" style="bottom:' + pct + '%"></div>';
+          }
+          for (h = H0; h <= H1; h++) {
+            var n = c[h], p = (n / top) * 100;
+            var cls = "vc-bar" + (n === 0 ? " zero" : "") + (h === peak && n > 0 ? " peak" : "");
+            cols += '<div class="vc-col" data-h="' + h + '"><div class="' + cls + '" style="height:' +
+              (n === 0 ? 4 : Math.max(p, 4)) + (n === 0 ? "px" : "%") + '"><span class="vc-val">' + n + "</span></div></div>";
+            xs += '<span' + (h === nowH ? ' class="now"' : "") + ">" + pad(h) + ":00</span>";
+          }
+          box.innerHTML =
+            '<div class="vc-wrap"><div class="vc-y">' + y + '</div><div><div class="vc-area">' + lines +
+            '<div class="vc-bars">' + cols + '</div></div><div class="vc-xs">' + xs + "</div></div></div>" +
+            '<div class="vc-sum">' + (peak === null || max === 0
+              ? "Belum ada kunjungan hari ini."
+              : "Jam tersibuk: <b>" + range(peak) + "</b> · " + max + " tamu (total " + total + " tamu)") + "</div>";
+        }
+
+        /* Tooltip waktu saat kursor di atas batang */
+        box.addEventListener("mouseover", function (e) {
+          var col = e.target.closest ? e.target.closest(".vc-col") : null;
+          if (!col) return;
+          var h = parseInt(col.getAttribute("data-h"), 10);
+          tip.innerHTML = range(h) + "<b>" + (counts()[h] || 0) + " tamu</b>";
+          var r = col.querySelector(".vc-bar").getBoundingClientRect();
+          tip.style.left = r.left + r.width / 2 + "px";
+          tip.style.top = r.top - 22 + "px";
+          tip.classList.add("on");
+        });
+        box.addEventListener("mouseout", function () { tip.classList.remove("on"); });
+
+        var timer;
+        function schedule() { clearTimeout(timer); timer = setTimeout(render, 80); }
+        ["antrianBody", "navAntrian", "navCnt"].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el) new MutationObserver(schedule).observe(el, { childList: true, subtree: true, characterData: true });
+        });
+        render();
+        window.addEventListener("load", function () { setTimeout(render, 800); setTimeout(render, 2500); });
+        setInterval(render, 60000); /* perbarui penanda jam sekarang */
+      })();
+    </script>
+
+    <!-- Mode folder: "config" = dari config.json, "picker" = pilih manual lewat web -->
+    <script>
+      (function () {
+        var panel = document.getElementById("folderStubs");
+        function showPicker() { panel.hidden = false; }
+        fetch("/api/config", { cache: "no-store" })
+          .then(function (r) { if (!r.ok) throw new Error("no server"); return r.json(); })
+          .then(function (cfg) {
+            window.APP_CONFIG = cfg;
+            if (cfg.folderMode === "picker") showPicker();
+          })
+          .catch(showPicker); /* tanpa server.js (mis. Live Server) → pemilih folder tetap tersedia */
+      })();
+    </script>
+
+    <!-- ============ PANGGILAN ANTRIAN BERSUARA (offline, hanya membaca DOM; langsung di file ini, tanpa folder js) ============ -->
+    <script>
+      /* =====================================================================
+         Panggilan antrian bersuara (OFFLINE)
+         - Hanya MEMBACA DOM (#callCard .call-no), tidak mengubah kode lain.
+         - Suara dari mesin suara bawaan perangkat (Web Speech API), tanpa internet
+           selama paket suara bahasa Indonesia terpasang di perangkat.
+         - Bunyi "ding-dong" dibuat lewat WebAudio (tanpa file audio).
+         ===================================================================== */
+      (function () {
+        "use strict";
+
+        /* ---------- PENGATURAN (silakan ubah) ---------- */
+        var CFG = {
+          prefix: "Nomor antrian",          /* kalimat di depan nomor */
+          suffix: "silakan menuju PST",   /* kalimat setelah nomor */
+          repeat: 2,                        /* berapa kali kalimat diulang */
+          chime: true,                      /* bunyi ding-dong sebelum bicara */
+          rate: 0.9,                        /* kecepatan bicara (0.1 – 2) */
+          pitch: 1,
+          volume: 1,
+          armDelay: 3500                    /* ms setelah halaman dibuka; nomor yang sudah tampil saat itu tidak dibacakan */
+        };
+
+        if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
+          console.warn("Suara antrian: browser ini tidak mendukung speechSynthesis.");
+          return;
+        }
+
+        var synth = window.speechSynthesis;
+        var KEY = "bt_voice";
+        var enabled = true;
+        try { enabled = localStorage.getItem(KEY) !== "0"; } catch (e) {}
+
+        var voice = null, localOnly = false;
+        var lastNo = null, armed = false, clearT = null, seq = 0, ac = null;
+        var btn = null;
+
+        /* ---------- Pilih suara Indonesia (utamakan yang offline/lokal) ---------- */
+        function pickVoice() {
+          var vs = synth.getVoices() || [];
+          var id = vs.filter(function (v) { return /^(id|in)([-_]|$)/i.test(v.lang); });
+          voice = id.filter(function (v) { return v.localService; })[0] || id[0] || null;
+          localOnly = !!(voice && voice.localService);
+          updateBtn();
+        }
+        if (synth.addEventListener) synth.addEventListener("voiceschanged", pickVoice);
+        else synth.onvoiceschanged = pickVoice;
+        pickVoice();
+        setTimeout(pickVoice, 1000);
+        setTimeout(pickVoice, 3000);
+
+        /* ---------- Ubah nomor antrian jadi kalimat ucapan ---------- */
+        function say(no) {
+          var parts = String(no).match(/[A-Za-z]+|\d+/g) || [String(no)];
+          var words = parts.map(function (p) {
+            return /^\d+$/.test(p)
+              ? String(parseInt(p, 10))                 /* 012 → 12 */
+              : p.toUpperCase().split("").join(" ");    /* AB → A B */
+          }).join(" ");
+          return CFG.prefix + " " + words + ", " + CFG.suffix;
+        }
+
+        /* ---------- Bunyi ding-dong (tanpa file audio) ---------- */
+        function chime(done) {
+          if (!CFG.chime) return done();
+          try {
+            ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+            if (ac.state === "suspended") ac.resume();
+            var t = ac.currentTime;
+            [[659.25, 0], [523.25, 0.45]].forEach(function (n) {
+              var o = ac.createOscillator(), g = ac.createGain(), s = t + n[1];
+              o.type = "sine";
+              o.frequency.value = n[0];
+              g.gain.setValueAtTime(0.0001, s);
+              g.gain.exponentialRampToValueAtTime(0.35, s + 0.03);
+              g.gain.exponentialRampToValueAtTime(0.0001, s + 0.9);
+              o.connect(g);
+              g.connect(ac.destination);
+              o.start(s);
+              o.stop(s + 0.95);
+            });
+            setTimeout(done, 1300);
+          } catch (e) { done(); }
+        }
+
+        function speakOnce(text, next) {
+          var u = new SpeechSynthesisUtterance(text);
+          u.lang = voice ? voice.lang : "id-ID";
+          if (voice) u.voice = voice;
+          u.rate = CFG.rate;
+          u.pitch = CFG.pitch;
+          u.volume = CFG.volume;
+          u.onend = next;
+          u.onerror = next;
+          synth.speak(u);
+        }
+
+        function announce(no) {
+          if (!enabled || !no) return;
+          var token = ++seq;
+          synth.cancel();
+          chime(function () {
+            if (token !== seq) return;
+            var text = say(no), n = 0;
+            (function loop() {
+              if (token !== seq || n >= CFG.repeat) return;
+              n++;
+              speakOnce(text, function () { setTimeout(loop, 500); });
+            })();
+          });
+        }
+
+        /* ---------- Pantau nomor "Sedang dipanggil" (hanya baca DOM) ---------- */
+        function check() {
+          var el = document.querySelector("#callCard .call-no");
+          var no = el ? el.textContent.trim() : "";
+
+          if (!no || no === "—" || no === "-") {
+            /* tabel bisa sesaat kosong saat dirender ulang → jangan langsung reset */
+            if (lastNo !== null && !clearT) {
+              clearT = setTimeout(function () { lastNo = null; clearT = null; }, 2500);
+            }
+            return;
+          }
+          if (clearT) { clearTimeout(clearT); clearT = null; }
+          if (no !== lastNo) {
+            lastNo = no;
+            if (armed) announce(no);
+          }
+        }
+
+        /* ---------- Tombol kontrol di header admin ---------- */
+        function needsGesture() {
+          return !!(navigator.userActivation && !navigator.userActivation.hasBeenActive);
+        }
+
+        function updateBtn() {
+          if (!btn) return;
+          if (!enabled) {
+            btn.textContent = "🔇 Suara mati";
+            btn.title = "Klik untuk menyalakan panggilan suara";
+            return;
+          }
+          if (needsGesture()) {
+            btn.textContent = "🔊 Klik untuk aktifkan suara";
+            btn.title = "Browser memerlukan satu klik di halaman ini sebelum suara boleh diputar.";
+            return;
+          }
+          btn.textContent = "🔊 Suara aktif" + (voice ? "" : " ⚠");
+          btn.title = !voice
+            ? "Suara bahasa Indonesia tidak ditemukan di perangkat ini. Pasang paket suara Indonesia di pengaturan sistem."
+            : localOnly
+              ? "Suara offline: " + voice.name
+              : "Suara yang terdeteksi (" + voice.name + ") kemungkinan memerlukan internet. Pasang suara Indonesia offline di pengaturan sistem.";
+        }
+
+        function toggle() {
+          enabled = !enabled;
+          try { localStorage.setItem(KEY, enabled ? "1" : "0"); } catch (e) {}
+          seq++;
+          synth.cancel();
+          updateBtn();
+          if (enabled) speakOnce("Suara panggilan antrian aktif", function () {}); /* uji suara */
+        }
+
+        function buildUI() {
+          var host = document.querySelector(".app-header-r");
+          if (!host) return;
+          var wrap = document.createElement("div");
+          wrap.style.cssText = "display:inline-flex;gap:8px;align-items:center";
+
+          btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "btn btn-s";
+          btn.addEventListener("click", toggle);
+
+          var again = document.createElement("button");
+          again.type = "button";
+          again.className = "btn btn-s";
+          again.textContent = "Panggil ulang";
+          again.title = "Ucapkan lagi nomor yang sedang dipanggil";
+          again.addEventListener("click", function () { if (lastNo) announce(lastNo); });
+
+          wrap.appendChild(btn);
+          wrap.appendChild(again);
+          host.insertBefore(wrap, host.firstChild);
+          updateBtn();
+        }
+
+        /* ---------- Mulai ---------- */
+        buildUI();
+        document.addEventListener("pointerdown", function () { setTimeout(updateBtn, 0); }, true);
+        document.addEventListener("keydown", function () { setTimeout(updateBtn, 0); }, true);
+
+        var call = document.getElementById("callCard");
+        if (call) new MutationObserver(check).observe(call, { childList: true, subtree: true, characterData: true });
+        check();
+        window.addEventListener("load", function () { setTimeout(check, 900); });
+        setTimeout(function () { armed = true; check(); }, CFG.armDelay);
+      })();
+    </script>
   </body>
 </html>
