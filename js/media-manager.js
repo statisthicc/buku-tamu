@@ -7,12 +7,112 @@ function createMediaManager(storeKey) {
     KEY: "dir",
   };
 
+  // function openIdb() {
+  //   return new Promise((ok, ng) => {
+  //     const r = indexedDB.open(IDB.NAME, 1);
+  //     r.onupgradeneeded = (e) => e.target.result.createObjectStore(IDB.STORE);
+  //     r.onsuccess = (e) => ok(e.target.result);
+  //     r.onerror = (e) => ng(e.target.error);
+  //   });
+  // }
+  // async function idbPut(val) {
+  //   const db = await openIdb();
+  //   return new Promise((ok, ng) => {
+  //     const tx = db.transaction(IDB.STORE, "readwrite");
+  //     tx.objectStore(IDB.STORE).put(val, IDB.KEY);
+  //     tx.oncomplete = ok;
+  //     tx.onerror = (e) => ng(e.target.error);
+  //   });
+  // }
+  // async function idbGet() {
+  //   const db = await openIdb();
+  //   return new Promise((ok, ng) => {
+  //     const tx = db.transaction(IDB.STORE, "readonly");
+  //     const r = tx.objectStore(IDB.STORE).get(IDB.KEY);
+  //     r.onsuccess = (e) => ok(e.target.result ?? null);
+  //     r.onerror = (e) => ng(e.target.error);
+  //   });
+  // }
+  // async function idbDel() {
+  //   const db = await openIdb();
+  //   return new Promise((ok, ng) => {
+  //     const tx = db.transaction(IDB.STORE, "readwrite");
+  //     tx.objectStore(IDB.STORE).delete(IDB.KEY);
+  //     tx.oncomplete = ok;
+  //     tx.onerror = (e) => ng(e.target.error);
+  //   });
+  // }
+
+  // function openIdb() {
+  //   return new Promise((ok, ng) => {
+  //     const r = indexedDB.open(IDB.NAME, 1);
+  //     r.onupgradeneeded = (e) => e.target.result.createObjectStore(IDB.STORE);
+  //     r.onsuccess = (e) => {
+  //       const db = e.target.result;
+  //       db.onversionchange = () => db.close();
+  //       ok(db);
+  //     };
+  //     r.onerror = (e) => ng(e.target.error);
+  //     r.onblocked = () => ng(new Error("IndexedDB diblokir oleh tab lain"));
+  //   });
+  // }
+  // async function idbPut(val) {
+  //   const db = await openIdb();
+  //   return new Promise((ok, ng) => {
+  //     const tx = db.transaction(IDB.STORE, "readwrite");
+  //     tx.objectStore(IDB.STORE).put(val, IDB.KEY);
+  //     tx.oncomplete = () => {
+  //       db.close();
+  //       ok();
+  //     };
+  //     tx.onerror = (e) => {
+  //       db.close();
+  //       ng(e.target.error);
+  //     };
+  //   });
+  // }
+  // async function idbGet() {
+  //   const db = await openIdb();
+  //   return new Promise((ok, ng) => {
+  //     const tx = db.transaction(IDB.STORE, "readonly");
+  //     const r = tx.objectStore(IDB.STORE).get(IDB.KEY);
+  //     r.onsuccess = (e) => {
+  //       db.close();
+  //       ok(e.target.result ?? null);
+  //     };
+  //     r.onerror = (e) => {
+  //       db.close();
+  //       ng(e.target.error);
+  //     };
+  //   });
+  // }
+  // async function idbDel() {
+  //   const db = await openIdb();
+  //   return new Promise((ok, ng) => {
+  //     const tx = db.transaction(IDB.STORE, "readwrite");
+  //     tx.objectStore(IDB.STORE).delete(IDB.KEY);
+  //     tx.oncomplete = () => {
+  //       db.close();
+  //       ok();
+  //     };
+  //     tx.onerror = (e) => {
+  //       db.close();
+  //       ng(e.target.error);
+  //     };
+  //   });
+  // }
+
   function openIdb() {
     return new Promise((ok, ng) => {
       const r = indexedDB.open(IDB.NAME, 1);
       r.onupgradeneeded = (e) => e.target.result.createObjectStore(IDB.STORE);
-      r.onsuccess = (e) => ok(e.target.result);
+      r.onsuccess = (e) => {
+        const db = e.target.result;
+        db.onversionchange = () => db.close();
+        ok(db);
+      };
       r.onerror = (e) => ng(e.target.error);
+      r.onblocked = () => ng(new Error("IndexedDB diblokir oleh tab lain"));
     });
   }
   async function idbPut(val) {
@@ -20,8 +120,14 @@ function createMediaManager(storeKey) {
     return new Promise((ok, ng) => {
       const tx = db.transaction(IDB.STORE, "readwrite");
       tx.objectStore(IDB.STORE).put(val, IDB.KEY);
-      tx.oncomplete = ok;
-      tx.onerror = (e) => ng(e.target.error);
+      tx.oncomplete = () => {
+        db.close();
+        ok();
+      };
+      tx.onerror = (e) => {
+        db.close();
+        ng(e.target.error);
+      };
     });
   }
   async function idbGet() {
@@ -29,8 +135,14 @@ function createMediaManager(storeKey) {
     return new Promise((ok, ng) => {
       const tx = db.transaction(IDB.STORE, "readonly");
       const r = tx.objectStore(IDB.STORE).get(IDB.KEY);
-      r.onsuccess = (e) => ok(e.target.result ?? null);
-      r.onerror = (e) => ng(e.target.error);
+      r.onsuccess = (e) => {
+        db.close();
+        ok(e.target.result ?? null);
+      };
+      r.onerror = (e) => {
+        db.close();
+        ng(e.target.error);
+      };
     });
   }
   async function idbDel() {
@@ -38,8 +150,14 @@ function createMediaManager(storeKey) {
     return new Promise((ok, ng) => {
       const tx = db.transaction(IDB.STORE, "readwrite");
       tx.objectStore(IDB.STORE).delete(IDB.KEY);
-      tx.oncomplete = ok;
-      tx.onerror = (e) => ng(e.target.error);
+      tx.oncomplete = () => {
+        db.close();
+        ok();
+      };
+      tx.onerror = (e) => {
+        db.close();
+        ng(e.target.error);
+      };
     });
   }
 
@@ -59,19 +177,35 @@ function createMediaManager(storeKey) {
   //   }
   // }
 
+  // async function init() {
+  //   if (!FSA) return;
+  //   try {
+  //     const h = await idbGet();
+  //     if (h) {
+  //       const opts = { mode: "read" }; // or "readwrite" for db-manager
+  //       const perm = await h.queryPermission(opts);
+  //       if (perm === "granted") {
+  //         _dir = h;
+  //       }
+  //     }
+  //   } catch (e) {
+  //     console.warn("[Manager] init:", e);
+  //   }
+  // }
+
   async function init() {
     if (!FSA) return;
     try {
       const h = await idbGet();
       if (h) {
-        const opts = { mode: "read" }; // or "readwrite" for db-manager
-        const perm = await h.queryPermission(opts);
-        if (perm === "granted") {
-          _dir = h;
-        }
+        const perm = await Promise.race([
+          h.queryPermission({ mode: "read" }),
+          new Promise((r) => setTimeout(() => r("timeout"), 2000)),
+        ]);
+        if (perm === "granted") _dir = h;
       }
     } catch (e) {
-      console.warn("[Manager] init:", e);
+      console.warn(`[MediaManager:${storeKey}] init:`, e);
     }
   }
 

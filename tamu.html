@@ -9,33 +9,6 @@
       content="Buku tamu digital Pelayanan Statistik Terpadu BPS Kabupaten Buton Utara. Isi data diri dan keperluan kunjungan Anda."
     />
     <link rel="stylesheet" href="css/style_tamu.css" />
-    <style>
-      /* Jam kunjungan di bawah sambutan */
-      .waktu-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-top: 14px;
-        padding: 7px 14px;
-        border-radius: 99px;
-        background: rgba(255, 255, 255, 0.14);
-        border: 1px solid rgba(255, 255, 255, 0.28);
-        color: inherit;
-        font-size: 13px;
-        font-weight: 600;
-        font-variant-numeric: tabular-nums;
-      }
-      .waktu-chip::before {
-        content: "";
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: #22c55e;
-        animation: waktuBlink 2s infinite;
-      }
-      @keyframes waktuBlink { 0%, 100% { opacity: 1 } 50% { opacity: 0.35 } }
-      @media (prefers-reduced-motion: reduce) { .waktu-chip::before { animation: none } }
-    </style>
   </head>
   <body>
     <div id="boot">
@@ -93,7 +66,7 @@
           Mohon isi buku tamu terlebih dahulu sebelum melanjutkan kunjungan.
         </p>
         <!-- Waktu kunjungan: jam lokal perangkat, sama dengan yang tercatat di data -->
-        <div class="waktu-chip" id="waktuKunjungan" role="timer" aria-live="off">—</div>
+        <!-- <div class="waktu-chip" id="waktuKunjungan" role="timer" aria-live="off">—</div> -->
       </div>
 
       <div class="card">
@@ -333,7 +306,7 @@
         </p>
         <div class="modal-acts">
           <button class="btn-cancel" onclick="closeResetModal()">Batal</button>
-          <button class="btn-confirm" id="btnConfirmReset">Ya, Reset</button>
+          <button class="btn-confirm" id="btnConfirmReset">Reset</button>
         </div>
       </div>
     </div>
@@ -341,93 +314,6 @@
     <script src="libs/sql-wasm.js"></script>
     <script src="js/db-manager.js"></script>
     <script src="js/media-manager.js"></script>
-    <!-- Helper waktu (WITA/lokal) — harus berada SEBELUM logic_tamu.js -->
-    <script>
-/* ==========================================================
-   waktu.js — satu sumber waktu untuk form tamu, admin, dan CSV
-   Selalu memakai jam LOKAL perangkat (bukan UTC), sehingga
-   Makassar/Buton Utara tampil WITA (UTC+8), bukan selisih 8 jam.
-   ========================================================== */
-(function (w) {
-  "use strict";
-
-  function p(n) { return String(n).padStart(2, "0"); }
-
-  var HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-  var BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli",
-               "Agustus", "September", "Oktober", "November", "Desember"];
-
-  /* Label zona waktu dari offset perangkat */
-  function zona(d) {
-    var off = -(d || new Date()).getTimezoneOffset(); /* menit dari UTC */
-    if (off === 420) return "WIB";
-    if (off === 480) return "WITA";
-    if (off === 540) return "WIT";
-    var s = off >= 0 ? "+" : "-";
-    return "UTC" + s + p(Math.floor(Math.abs(off) / 60)) + (Math.abs(off) % 60 ? ":" + p(Math.abs(off) % 60) : "");
-  }
-
-  var Waktu = {
-    now: function () { return new Date(); },
-
-    /* "2026-11-17 14:05:09" — untuk disimpan ke database */
-    stamp: function (d) {
-      d = d || new Date();
-      return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " +
-             p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
-    },
-
-    /* "2026-11-17" — kunci tanggal (misal untuk reset nomor antrian harian) */
-    tanggal: function (d) {
-      d = d || new Date();
-      return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
-    },
-
-    /* "17/11/2026 14:05:09" — tampilan di tabel dan CSV/Excel */
-    tampil: function (d) {
-      d = d || new Date();
-      return p(d.getDate()) + "/" + p(d.getMonth() + 1) + "/" + d.getFullYear() + " " +
-             p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
-    },
-
-    /* "Selasa, 17 November 2026" */
-    hariTanggal: function (d) {
-      d = d || new Date();
-      return HARI[d.getDay()] + ", " + d.getDate() + " " + BULAN[d.getMonth()] + " " + d.getFullYear();
-    },
-
-    /* "14:05:09" */
-    jam: function (d) {
-      d = d || new Date();
-      return p(d.getHours()) + ":" + p(d.getMinutes()) + ":" + p(d.getSeconds());
-    },
-
-    zona: zona,
-
-    /* Ubah teks waktu dari database menjadi tampilan lokal.
-       Menangani "YYYY-MM-DD HH:MM:SS" (dianggap lokal) dan ISO "…Z" (UTC → lokal). */
-    dariDb: function (s) {
-      if (!s) return "";
-      var d = /Z$|[+-]\d{2}:?\d{2}$/.test(s) ? new Date(s) : new Date(String(s).replace(" ", "T"));
-      return isNaN(d) ? String(s) : Waktu.tampil(d);
-    },
-
-    /* Jam hidup di elemen mana pun: Waktu.pasangJam("idElemen") */
-    pasangJam: function (id) {
-      var el = document.getElementById(id);
-      if (!el) return;
-      function tick() {
-        var d = new Date();
-        el.textContent = Waktu.hariTanggal(d) + " · " + Waktu.jam(d) + " " + zona(d);
-      }
-      tick();
-      setInterval(tick, 1000);
-    }
-  };
-
-  w.Waktu = Waktu;
-})(window);
-    </script>
     <script src="js/logic_tamu.js"></script>
     <script>
       Waktu.pasangJam("waktuKunjungan");

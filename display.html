@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Layar Antrian — PST BPS Kab. Buton Utara</title>
+    <title>Layar Antrean — PST BPS Kab. Buton Utara</title>
     <link rel="stylesheet" href="css/style_display.css" />
   </head>
   <body>
     <div id="boot">
-      <div class="b-logo">Layar <span>Antrian</span></div>
+      <div class="b-logo">Layar <span>Antrean</span></div>
       <div class="b-bar"><div class="b-fill" id="bootFill"></div></div>
       <div class="b-sub" id="bootSub">Memuat data…</div>
     </div>
@@ -21,19 +21,24 @@
             <div class="poster-wrap">
               <div class="poster-box">
                 <div class="poster-media" id="posterMedia"></div>
-                <button class="v-play" id="vPlay" type="button" aria-label="Putar video"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></button>
-                <div class="v-caption">
-                </div>
                 <div class="v-progress"><i></i><i></i><i></i></div>
               </div>
             </div>
             <div class="poster-info">
-              <div class="pi-text">
+              <!-- <div class="pi-text">
                 <div class="pi-title">Pelayanan Statistik Terpadu</div>
-              </div>
+              </div> -->
               <div class="pi-logos">
-                <img src="img/logo-bps.png" alt="" onerror="this.style.display='none'" />
-                <img src="img/logo-pst.png" alt="" onerror="this.style.display='none'" />
+                <img
+                  src="img/logo-bps.png"
+                  alt=""
+                  onerror="this.style.display = 'none'"
+                />
+                <img
+                  src="img/logo-pst.png"
+                  alt=""
+                  onerror="this.style.display = 'none'"
+                />
               </div>
             </div>
           </div>
@@ -42,11 +47,11 @@
         <div class="tv-col tv-col-right" id="tvColRight">
           <div class="tv-card tv-card-serving">
             <div class="tvc-pill"><i></i>Sedang dipanggil</div>
-            <div class="tvc-label">Nomor antrean Anda</div>
-            <div class="tvc-number" id="servingNumber">—</div>
+            <div class="tvc-label">Antrean</div>
+            <div class="tvc-number" id="servingNumber">Belum ada antrean</div>
           </div>
           <div class="tv-card tv-card-next">
-            <div class="tvn-title">Antrean selanjutnya</div>
+            <div class="tvn-title">Antrean Berikutnya</div>
             <div class="tvn-sub">Mohon bersiap saat nomor Anda mendekat.</div>
             <div class="tvc-queue" id="queueList"></div>
             <div class="tvn-note">Nomor dipanggil sesuai urutan antrean.</div>
@@ -55,176 +60,24 @@
       </div>
 
       <!-- FOOTER -->
-      <footer class="tv-footer">
-        <div class="tvf-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h3.5L12 18.5v-13L6.5 10H3zm12.5 2a4 4 0 0 0-2-3.46v6.92a4 4 0 0 0 2-3.46zM13.5 4.2v2.1a6.5 6.5 0 0 1 0 11.4v2.1a8.5 8.5 0 0 0 0-15.6z"/></svg>Informasi</div>
+      <div class="tv-footer">
+        <div class="tv-datetime">
+          <div class="tv-date" id="tvDate"></div>
+          <div class="tv-time" id="tvTime">--.-- Wita</div>
+        </div>
         <div class="tv-marquee">
           <div class="tv-marquee-track" id="marqueeTrack">
             Silakan menunggu nomor antrian Anda dipanggil oleh petugas
-            <span class="dot">•</span> Pelayanan Statistik Terpadu BPS Kabupaten Buton Utara
-            <span class="dot">•</span>
+            &nbsp;•&nbsp; Pelayanan Statistik Terpadu BPS Kabupaten Buton Utara
+            &nbsp;•&nbsp;
           </div>
         </div>
-        <div class="tv-datetime">
-          <div class="tv-time" id="tvTime">--.--</div>
-          <div class="tv-date" id="tvDate">—</div>
-        </div>
-      </footer>
+      </div>
     </div>
 
     <script src="libs/sql-wasm.js"></script>
     <script src="js/db-manager.js"></script>
     <script src="js/media-manager.js"></script>
     <script src="js/logic_display.js"></script>
-
-    <script>
-      (function () {
-        "use strict";
-        var $ = function (id) { return document.getElementById(id); };
-
-        /* ---------- Jam & tanggal (format: 09.41 / Senin, 16 November 2026) ---------- */
-        var HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-        var BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        var tvTime = $("tvTime"), tvDate = $("tvDate");
-        function pad(n) { return String(n).padStart(2, "0"); }
-        function setText(el, t) { if (el.textContent.trim() !== t) el.textContent = t; }
-        function tick() {
-          var d = new Date();
-          setText(tvTime, pad(d.getHours()) + "." + pad(d.getMinutes()));
-          setText(tvDate, HARI[d.getDay()] + ", " + d.getDate() + " " + BULAN[d.getMonth()] + " " + d.getFullYear());
-        }
-        [tvTime, tvDate].forEach(function (el) {
-          new MutationObserver(tick).observe(el, { childList: true, characterData: true, subtree: true });
-        });
-        tick();
-        setInterval(tick, 1000);
-
-        var media = $("posterMedia"), playBtn = $("vPlay");
-        function vid() { return media.querySelector("video"); }
-        function syncPlay() {
-          var v = vid();
-          playBtn.classList.toggle("on", !!(v && v.paused));
-        }
-        ["play", "pause", "ended", "loadeddata"].forEach(function (ev) {
-          media.addEventListener(ev, syncPlay, true);
-        });
-        new MutationObserver(syncPlay).observe(media, { childList: true, subtree: true });
-        playBtn.addEventListener("click", function () {
-          var v = vid();
-          if (v) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
-        });
-        syncPlay();
-
-        var track = $("marqueeTrack"), lastText = null;
-        function checkMarquee() {
-          var t = track.textContent.replace(/\s+/g, " ").trim();
-          if (t === lastText) return;
-          lastText = t;
-          track.classList.remove("scroll");
-          if (track.scrollWidth > track.clientWidth) track.classList.add("scroll");
-        }
-        checkMarquee();
-        window.addEventListener("load", checkMarquee);
-        setInterval(checkMarquee, 3000);
-      })();
-    </script>
-
-    <script>
-      (function () {
-        "use strict";
-        var KEY = "bt_queue";
-        var LOKET_DEFAULT = "01"; /* dipakai jika admin tidak mengirim state.loket */
-        var SHOW_NEXT = 3;        /* sama dengan admin.html */
-        var serving = document.getElementById("servingNumber");
-        var list = document.getElementById("queueList");
-        var hint = document.getElementById("tvHint");   /* opsional: tidak ada di HTML */
-        var loket = document.getElementById("tvLoket"); /* opsional: tidak ada di HTML */
-        var state = null;
-
-        function todayKey() {
-          var d = new Date();
-          return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-        }
-        function esc(s) {
-          return String(s).replace(/[&<>"']/g, function (c) {
-            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-          });
-        }
-        function fresh(s) { return s && s.date === todayKey() ? s : null; }
-        function read() {
-          try { return fresh(JSON.parse(localStorage.getItem(KEY) || "null")); }
-          catch (e) { return null; }
-        }
-        function setText(el, t) { if (el.textContent.trim() !== t) el.textContent = t; }
-
-        function apply() {
-          state = fresh(state);
-          var has = !!(state && state.serving);
-          setText(serving, has ? state.serving : "—");
-          if (hint) setText(hint, has ? "Silakan menuju loket" : "Belum ada antrean");
-          if (loket) setText(loket, (state && state.loket) ? String(state.loket) : LOKET_DEFAULT);
-
-          var next = state && state.next ? state.next.slice(0, SHOW_NEXT) : [];
-          var html = next.length
-            ? next.map(function (n, i) {
-                return '<div class="tvq-item' + (i === 0 ? " first" : "") + '"><b>' + esc(n) + "</b><span>" + (i === 0 ? "Bersiap" : "Menunggu") + "</span></div>";
-              }).join("")
-            : "";
-          var tmp = document.createElement("div");
-          tmp.innerHTML = html;
-          if (list.innerHTML !== tmp.innerHTML) list.innerHTML = tmp.innerHTML;
-        }
-
-        window.addEventListener("storage", function (e) {
-          if (e.key === KEY) { state = read(); apply(); }
-        });
-        var chan = null;
-        if ("BroadcastChannel" in window) {
-          chan = new BroadcastChannel("bt_queue");
-          chan.onmessage = function (e) {
-            if (e.data && e.data.request) return;   /* abaikan pesan permintaan */
-            state = fresh(e.data); apply();
-          };
-        } 
-        var guard = new MutationObserver(function () { apply(); });
-        guard.observe(serving, { childList: true, characterData: true, subtree: true });
-        guard.observe(list, { childList: true, characterData: true, subtree: true });
-
-        state = read();
-        apply();
-
-        /* Minta admin mengirim state terbaru saat display dibuka/di-refresh */
-        function ask() { try { if (chan) chan.postMessage({ request: true }); } catch (e) {} }
-        ask();
-
-        window.addEventListener("load", function () {
-          [500, 1500, 4000].forEach(function (ms) { setTimeout(function () { state = read() || state; apply(); ask(); }, ms); });
-        });
-        setInterval(function () { state = read() || state; apply(); }, 5000); /* cadangan */
-      })();
-    </script>
-
-    <!-- ============ AUTOPLAY VIDEO (tambahan, tidak mengubah kode lain) ============ -->
-    <script>
-      (function () {
-        "use strict";
-        var media = document.getElementById("posterMedia");
-        function kick() {
-          var v = media.querySelector("video");
-          if (!v || !v.paused || v.ended) return;
-          v.playsInline = true;
-          var p = v.play();
-          if (p && p.catch) {
-            p.catch(function () {
-              v.muted = true;
-              var q = v.play();
-              if (q && q.catch) q.catch(function () {});
-            });
-          }
-        }
-        new MutationObserver(kick).observe(media, { childList: true, subtree: true });
-        media.addEventListener("loadeddata", kick, true);
-        window.addEventListener("load", kick);
-      })();
-    </script>
   </body>
 </html>

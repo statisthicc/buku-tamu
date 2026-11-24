@@ -66,10 +66,24 @@ async function initDB() {
   setTimeout(() => document.getElementById("boot").classList.add("gone"), 450);
 }
 
+// async function tryLoadFromFolder() {
+//   const st = DBManager.status();
+//   if (!st.supported || !st.folderSet) return false;
+//   const r = await DBManager.load(DB_FILENAME);
+//   if (r.ok && r.data) {
+//     try {
+//       db = new SQL.Database(r.data);
+//       return true;
+//     } catch (e) {
+//       return false;
+//     }
+//   }
+//   return false;
+// }
 async function tryLoadFromFolder() {
   const st = DBManager.status();
-  if (!st.supported || !st.folderSet) return false;
-  const r = await DBManager.load(DB_FILENAME);
+  if (!st.supported || !st.active) return false;
+  const r = await DBManager.loadSilent(DB_FILENAME);
   if (r.ok && r.data) {
     try {
       db = new SQL.Database(r.data);

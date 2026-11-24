@@ -11,14 +11,16 @@ let _p = 0,
     fill.style.width = _p + "%";
   }, 180);
 
+const withTimeout = (p, ms, fallback) =>
+  Promise.race([p, new Promise((r) => setTimeout(() => r(fallback), ms))]);
+
 async function initDB() {
   document.getElementById("bootSub").textContent = "Memuat SQLite WASM…";
   SQL = await initSqlJs({ locateFile: () => "libs/sql-wasm.wasm" });
 
   document.getElementById("bootSub").textContent = "Membaca folder db/…";
-  // await DBManager.init();
   try {
-    await DBManager.init();
+    await withTimeout(DBManager.init(), 3000);
   } catch (e) {
     console.warn("DBManager init failed:", e);
   }
@@ -26,11 +28,11 @@ async function initDB() {
   updateFolderBar(DBManager.status());
 
   document.getElementById("bootSub").textContent = "Membuka database…";
-  // Coba muat dari folder db/ dulu, lalu fallback ke localStorage
   let loaded = false;
-  const st = DBManager.status();
-  if (st.active) {
-    const r = await DBManager.load(DB_FILE);
+  if (DBManager.status().active) {
+    const r = await withTimeout(DBManager.loadSilent(DB_FILE), 5000, {
+      ok: false,
+    });
     if (r.ok && r.data) {
       try {
         db = new SQL.Database(r.data);
@@ -38,6 +40,29 @@ async function initDB() {
       } catch {}
     }
   }
+  // document.getElementById("bootSub").textContent = "Membaca folder db/…";
+  // // await DBManager.init();
+  // try {
+  //   await DBManager.init();
+  // } catch (e) {
+  //   console.warn("DBManager init failed:", e);
+  // }
+  // DBManager.onChange(updateFolderBar);
+  // updateFolderBar(DBManager.status());
+
+  // document.getElementById("bootSub").textContent = "Membuka database…";
+  // // Coba muat dari folder db/ dulu, lalu fallback ke localStorage
+  // let loaded = false;
+  // const st = DBManager.status();
+  // if (st.active) {
+  //   const r = await DBManager.load(DB_FILE);
+  //   if (r.ok && r.data) {
+  //     try {
+  //       db = new SQL.Database(r.data);
+  //       loaded = true;
+  //     } catch {}
+  //   }
+  // }
   if (!loaded) {
     const saved = localStorage.getItem(STORE_KEY);
     if (saved) {

@@ -14,12 +14,53 @@ const DBManager = (() => {
   /* ── IndexedDB untuk menyimpan DirectoryHandle ─────────────────────────── */
   const IDB = { NAME: "bukutamu_fsa", STORE: "handles", KEY: "dir" };
 
+  // function openIdb() {
+  //   return new Promise((ok, ng) => {
+  //     const r = indexedDB.open(IDB.NAME, 1);
+  //     r.onupgradeneeded = (e) => e.target.result.createObjectStore(IDB.STORE);
+  //     r.onsuccess = (e) => ok(e.target.result);
+  //     r.onerror = (e) => ng(e.target.error);
+  //   });
+  // }
+  // async function idbPut(val) {
+  //   const db = await openIdb();
+  //   return new Promise((ok, ng) => {
+  //     const tx = db.transaction(IDB.STORE, "readwrite");
+  //     tx.objectStore(IDB.STORE).put(val, IDB.KEY);
+  //     tx.oncomplete = ok;
+  //     tx.onerror = (e) => ng(e.target.error);
+  //   });
+  // }
+  // async function idbGet() {
+  //   const db = await openIdb();
+  //   return new Promise((ok, ng) => {
+  //     const tx = db.transaction(IDB.STORE, "readonly");
+  //     const r = tx.objectStore(IDB.STORE).get(IDB.KEY);
+  //     r.onsuccess = (e) => ok(e.target.result ?? null);
+  //     r.onerror = (e) => ng(e.target.error);
+  //   });
+  // }
+  // async function idbDel() {
+  //   const db = await openIdb();
+  //   return new Promise((ok, ng) => {
+  //     const tx = db.transaction(IDB.STORE, "readwrite");
+  //     tx.objectStore(IDB.STORE).delete(IDB.KEY);
+  //     tx.oncomplete = ok;
+  //     tx.onerror = (e) => ng(e.target.error);
+  //   });
+  // }
+
   function openIdb() {
     return new Promise((ok, ng) => {
       const r = indexedDB.open(IDB.NAME, 1);
       r.onupgradeneeded = (e) => e.target.result.createObjectStore(IDB.STORE);
-      r.onsuccess = (e) => ok(e.target.result);
+      r.onsuccess = (e) => {
+        const db = e.target.result;
+        db.onversionchange = () => db.close();
+        ok(db);
+      };
       r.onerror = (e) => ng(e.target.error);
+      r.onblocked = () => ng(new Error("IndexedDB diblokir oleh tab lain"));
     });
   }
   async function idbPut(val) {
@@ -27,8 +68,14 @@ const DBManager = (() => {
     return new Promise((ok, ng) => {
       const tx = db.transaction(IDB.STORE, "readwrite");
       tx.objectStore(IDB.STORE).put(val, IDB.KEY);
-      tx.oncomplete = ok;
-      tx.onerror = (e) => ng(e.target.error);
+      tx.oncomplete = () => {
+        db.close();
+        ok();
+      };
+      tx.onerror = (e) => {
+        db.close();
+        ng(e.target.error);
+      };
     });
   }
   async function idbGet() {
@@ -36,8 +83,14 @@ const DBManager = (() => {
     return new Promise((ok, ng) => {
       const tx = db.transaction(IDB.STORE, "readonly");
       const r = tx.objectStore(IDB.STORE).get(IDB.KEY);
-      r.onsuccess = (e) => ok(e.target.result ?? null);
-      r.onerror = (e) => ng(e.target.error);
+      r.onsuccess = (e) => {
+        db.close();
+        ok(e.target.result ?? null);
+      };
+      r.onerror = (e) => {
+        db.close();
+        ng(e.target.error);
+      };
     });
   }
   async function idbDel() {
@@ -45,8 +98,14 @@ const DBManager = (() => {
     return new Promise((ok, ng) => {
       const tx = db.transaction(IDB.STORE, "readwrite");
       tx.objectStore(IDB.STORE).delete(IDB.KEY);
-      tx.oncomplete = ok;
-      tx.onerror = (e) => ng(e.target.error);
+      tx.oncomplete = () => {
+        db.close();
+        ok();
+      };
+      tx.onerror = (e) => {
+        db.close();
+        ng(e.target.error);
+      };
     });
   }
 
@@ -65,19 +124,53 @@ const DBManager = (() => {
   //   } catch(e) { console.warn('[DBM] init:', e); }
   // }
 
+  // async function init() {
+  //   if (!FSA) return;
+  //   try {
+  //     const h = await idbGet();
+  //     if (h) {
+  //       const opts = { mode: "read" }; // or "readwrite" for db-manager
+  //       const perm = await h.queryPermission(opts);
+  //       if (perm === "granted") {
+  //         _dir = h;
+  //       }
+  //     }
+  //   } catch (e) {
+  //     console.warn("[Manager] init:", e);
+  //   }
+  // }
+
   async function init() {
     if (!FSA) return;
     try {
       const h = await idbGet();
       if (h) {
-        const opts = { mode: "read" }; // or "readwrite" for db-manager
-        const perm = await h.queryPermission(opts);
-        if (perm === "granted") {
-          _dir = h;
-        }
+        const perm = await Promise.race([
+          h.queryPermission({ mode: "readwrite" }),
+          new Promise((r) => setTimeout(() => r("timeout"), 2000)),
+        ]);
+        if (perm === "granted") _dir = h;
       }
     } catch (e) {
-      console.warn("[Manager] init:", e);
+      console.warn("[DBM] init:", e);
+    }
+  }
+
+  // Boot-safe: never prompts, never opens a file picker
+  async function loadSilent(filename) {
+    if (!FSA || !_dir) return { ok: false };
+    try {
+      if ((await _dir.queryPermission({ mode: "read" })) !== "granted")
+        return { ok: false, error: "Izin folder belum aktif." };
+      const fh = await _dir.getFileHandle(filename);
+      const file = await fh.getFile();
+      return {
+        ok: true,
+        data: new Uint8Array(await file.arrayBuffer()),
+        filename: file.name,
+      };
+    } catch (e) {
+      return { ok: false, error: e.message };
     }
   }
 
@@ -268,6 +361,17 @@ const DBManager = (() => {
     URL.revokeObjectURL(a.href);
   }
 
+  // return {
+  //   init,
+  //   onChange,
+  //   status,
+  //   selectFolder,
+  //   clearFolder,
+  //   save,
+  //   load,
+  //   listFiles,
+  // };
+
   return {
     init,
     onChange,
@@ -276,6 +380,7 @@ const DBManager = (() => {
     clearFolder,
     save,
     load,
+    loadSilent,
     listFiles,
   };
 })();

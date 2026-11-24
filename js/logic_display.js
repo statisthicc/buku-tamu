@@ -20,11 +20,23 @@ async function initDB() {
   setInterval(updateDateTime, 1000);
 }
 
+// async function loadFromStorage() {
+//   const st = DBManager.status();
+//   let loaded = false;
+//   if (st.active) {
+//     const r = await DBManager.load(DB_FILENAME);
+//     if (r.ok && r.data) {
+//       try {
+//         db = new SQL.Database(r.data);
+//         loaded = true;
+//       } catch (e) {}
+//     }
+//   }
 async function loadFromStorage() {
   const st = DBManager.status();
   let loaded = false;
   if (st.active) {
-    const r = await DBManager.load(DB_FILENAME);
+    const r = await DBManager.loadSilent(DB_FILENAME);
     if (r.ok && r.data) {
       try {
         db = new SQL.Database(r.data);
@@ -97,7 +109,7 @@ function updateDateTime() {
     {
       weekday: "long",
       day: "2-digit",
-      month: "long",
+      month: "short",
       year: "numeric",
     },
   );
